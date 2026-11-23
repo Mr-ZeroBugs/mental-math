@@ -1,0 +1,685 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T04:31:10+00:00",
+  "title": "Design System: Mental Math Lab",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Cool Ground",
+        "canonical": "#f3f5fb",
+        "tonalRamp": [
+          "#192033",
+          "#29365e",
+          "#364b8c",
+          "#3f5ebc",
+          "#6e84c8",
+          "#9caad4",
+          "#c6cee4",
+          "#eef0f6"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Indigo Ink",
+        "canonical": "#141833",
+        "tonalRamp": [
+          "#1b1e32",
+          "#2c325b",
+          "#3b4586",
+          "#4755b4",
+          "#737dc2",
+          "#9fa6d1",
+          "#c8cce2",
+          "#eff0f6"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "#3b4163",
+        "tonalRamp": [
+          "#20222d",
+          "#363a51",
+          "#4b5176",
+          "#5e689d",
+          "#848bb2",
+          "#aaaec6",
+          "#ced0dd",
+          "#f0f1f4"
+        ]
+      },
+      "mute": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#5a6082",
+        "tonalRamp": [
+          "#21232b",
+          "#3a3d4d",
+          "#515670",
+          "#676e94",
+          "#8a8fab",
+          "#aeb1c2",
+          "#d0d1da",
+          "#f1f1f4"
+        ]
+      },
+      "disabled-ink": {
+        "role": "neutral",
+        "displayName": "Disabled Ink",
+        "canonical": "#8a90ad",
+        "tonalRamp": [
+          "#22232b",
+          "#3a3d4d",
+          "#515770",
+          "#686f94",
+          "#8b90ab",
+          "#aeb1c2",
+          "#d0d2da",
+          "#f1f1f4"
+        ]
+      },
+      "glass": {
+        "role": "neutral",
+        "displayName": "Glass",
+        "canonical": "rgba(255,255,255,.48)",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "glass-hi": {
+        "role": "neutral",
+        "displayName": "Glass Hi",
+        "canonical": "rgba(255,255,255,.78)",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "glass-edge": {
+        "role": "neutral",
+        "displayName": "Glass Edge",
+        "canonical": "rgba(255,255,255,.85)",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "hair": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(28,36,84,.10)",
+        "tonalRamp": [
+          "#191d33",
+          "#29305e",
+          "#36428c",
+          "#3f51bc",
+          "#6e7ac8",
+          "#9ca4d4",
+          "#c6cbe4",
+          "#eef0f6"
+        ]
+      },
+      "part-blue": {
+        "role": "primary",
+        "displayName": "Prism Blue",
+        "canonical": "#2f5bea",
+        "tonalRamp": [
+          "#111b3c",
+          "#182c6f",
+          "#1a3ba7",
+          "#1848e4",
+          "#5174e5",
+          "#8a9fe6",
+          "#bdc8ed",
+          "#eceff8"
+        ]
+      },
+      "part-orange": {
+        "role": "secondary",
+        "displayName": "Ember Orange",
+        "canonical": "#c4510f",
+        "tonalRamp": [
+          "#3d2010",
+          "#713716",
+          "#aa4d17",
+          "#e96113",
+          "#e8864d",
+          "#e9ab87",
+          "#eecebc",
+          "#f9f0ec"
+        ]
+      },
+      "part-magenta": {
+        "role": "secondary",
+        "displayName": "Prism Magenta",
+        "canonical": "#b0247f",
+        "tonalRamp": [
+          "#38152b",
+          "#66204e",
+          "#992872",
+          "#d02b96",
+          "#d75fad",
+          "#de92c3",
+          "#e8c2db",
+          "#f7edf4"
+        ]
+      },
+      "level-basic": {
+        "role": "tertiary",
+        "displayName": "Basic Teal",
+        "canonical": "#0b7f6a",
+        "tonalRamp": [
+          "#103c34",
+          "#177060",
+          "#18a98f",
+          "#15e7c1",
+          "#4fe7cb",
+          "#88e8d6",
+          "#bdeee5",
+          "#ecf9f6"
+        ]
+      },
+      "level-intermediate": {
+        "role": "tertiary",
+        "displayName": "Intermediate Amber",
+        "canonical": "#a35d00",
+        "tonalRamp": [
+          "#402a0c",
+          "#784b0e",
+          "#b76d0b",
+          "#fb8f01",
+          "#f5a840",
+          "#f1c07f",
+          "#f2d9b8",
+          "#faf3eb"
+        ]
+      },
+      "level-advanced": {
+        "role": "tertiary",
+        "displayName": "Advanced Violet",
+        "canonical": "#6a3be0",
+        "tonalRamp": [
+          "#1e1339",
+          "#331d6a",
+          "#46229f",
+          "#5723d8",
+          "#7f59dd",
+          "#a68fe1",
+          "#ccc0ea",
+          "#f0edf8"
+        ]
+      },
+      "level-basic-soft": {
+        "role": "tertiary",
+        "displayName": "Basic Teal Light",
+        "canonical": "#9fe3d1",
+        "tonalRamp": [
+          "#18352d",
+          "#266151",
+          "#319077",
+          "#39c29e",
+          "#69ccb2",
+          "#99d7c7",
+          "#c5e5dd",
+          "#eef6f4"
+        ]
+      },
+      "level-intermediate-soft": {
+        "role": "tertiary",
+        "displayName": "Intermediate Amber Light",
+        "canonical": "#ffd28a",
+        "tonalRamp": [
+          "#402c0c",
+          "#78500e",
+          "#b7740b",
+          "#fb9a01",
+          "#f5b040",
+          "#f1c57f",
+          "#f2dcb8",
+          "#faf4eb"
+        ]
+      },
+      "level-advanced-soft": {
+        "role": "tertiary",
+        "displayName": "Advanced Violet Light",
+        "canonical": "#c7b4ff",
+        "tonalRamp": [
+          "#190c40",
+          "#290e78",
+          "#360bb7",
+          "#4001fb",
+          "#6e40f5",
+          "#9c7ff1",
+          "#c7b8f2",
+          "#efebfa"
+        ]
+      },
+      "field-peach": {
+        "role": "neutral",
+        "displayName": "Field Peach",
+        "canonical": "#ffd9bf",
+        "tonalRamp": [
+          "#40210c",
+          "#78390e",
+          "#b7500b",
+          "#fb6601",
+          "#f58a40",
+          "#f1ad7f",
+          "#f2d0b8",
+          "#faf1eb"
+        ]
+      },
+      "field-pink": {
+        "role": "neutral",
+        "displayName": "Field Pink",
+        "canonical": "#f5c8e6",
+        "tonalRamp": [
+          "#38142c",
+          "#681f50",
+          "#9c2574",
+          "#d4279a",
+          "#d95cb0",
+          "#df91c5",
+          "#e9c1dc",
+          "#f8edf4"
+        ]
+      },
+      "field-periwinkle": {
+        "role": "neutral",
+        "displayName": "Field Periwinkle",
+        "canonical": "#bcd0ff",
+        "tonalRamp": [
+          "#0c1c40",
+          "#0e2e78",
+          "#0b3eb7",
+          "#014bfb",
+          "#4076f5",
+          "#7fa1f1",
+          "#b8c9f2",
+          "#ebeffa"
+        ]
+      },
+      "ok": {
+        "role": "feedback",
+        "displayName": "Correct Green",
+        "canonical": "#14803c",
+        "tonalRamp": [
+          "#133921",
+          "#1d6a39",
+          "#229f50",
+          "#23d966",
+          "#59dd8a",
+          "#8ee1ad",
+          "#c0ead0",
+          "#edf8f1"
+        ]
+      },
+      "bad": {
+        "role": "feedback",
+        "displayName": "Error Red",
+        "canonical": "#cf2d2d",
+        "tonalRamp": [
+          "#371515",
+          "#662121",
+          "#982929",
+          "#ce2d2d",
+          "#d56161",
+          "#dd9393",
+          "#e8c2c2",
+          "#f7eded"
+        ]
+      },
+      "primary-ink-top": {
+        "role": "neutral",
+        "displayName": "Primary Ink Top",
+        "canonical": "#2a3060",
+        "tonalRamp": [
+          "#1c1e31",
+          "#2f3358",
+          "#3f4682",
+          "#4d58af",
+          "#777fbe",
+          "#a2a7ce",
+          "#cacce1",
+          "#eff0f5"
+        ]
+      },
+      "primary-ink-bottom": {
+        "role": "neutral",
+        "displayName": "Primary Ink Bottom",
+        "canonical": "#151a3a",
+        "tonalRamp": [
+          "#1a1d33",
+          "#2b315c",
+          "#384389",
+          "#4353b8",
+          "#707cc5",
+          "#9da5d3",
+          "#c7cbe3",
+          "#eff0f6"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display-number": {
+        "displayName": "Display Number",
+        "purpose": "Problems in example/practice panes; thin, large, tabular."
+      },
+      "display-number-huge": {
+        "displayName": "Display Number Huge",
+        "purpose": "Mixed-test stage problem, centred."
+      },
+      "score-number": {
+        "displayName": "Score Number",
+        "purpose": "Mixed-test end score."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Technique name and view title."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "Thai technique name under the headline."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "Technique idea paragraph, max 68ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base reading text; steps at 16.5px."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Pane headers and summary sub-heads."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, tabs, toggle chips, notes."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Rail sub-names, stat labels, split notes, hints."
+      },
+      "part-number": {
+        "displayName": "Part Number",
+        "purpose": "Source and part chips in the Prism Split."
+      },
+      "answer-number": {
+        "displayName": "Answer Number",
+        "purpose": "Answer field numerals."
+      }
+    },
+    "shadows": [
+      {
+        "name": "glass-pane",
+        "value": "0 1px 0 rgba(255,255,255,.9) inset,0 -1px 0 rgba(20,28,70,.04) inset,0 18px 40px -18px rgba(24,32,88,.22),0 3px 8px -3px rgba(24,32,88,.08)",
+        "purpose": "Top bar, rail, panes, note, stage."
+      },
+      {
+        "name": "control-lift",
+        "value": "0 1px 0 #fff inset,0 4px 12px -6px rgba(24,32,88,.25)",
+        "purpose": "Secondary buttons at rest."
+      },
+      {
+        "name": "control-lift-hover",
+        "value": "0 1px 0 #fff inset,0 8px 18px -8px rgba(24,32,88,.32)",
+        "purpose": "Secondary buttons on hover."
+      },
+      {
+        "name": "selected-lift",
+        "value": "0 1px 0 #fff inset,0 6px 16px -8px rgba(24,32,88,.25)",
+        "purpose": "Active rail item; pressed toggles use the 14px variant."
+      },
+      {
+        "name": "ink-lift",
+        "value": "0 1px 0 rgba(255,255,255,.22) inset,0 8px 18px -8px rgba(20,24,58,.6)",
+        "purpose": "Primary button."
+      },
+      {
+        "name": "inset-well",
+        "value": "inset 0 2px 6px rgba(24,32,88,.08)",
+        "purpose": "Answer field."
+      },
+      {
+        "name": "focus-ring-field",
+        "value": "0 0 0 4px rgba(47,91,234,.14)",
+        "purpose": "Answer field focus, added to inset-well."
+      },
+      {
+        "name": "part-chip-glow",
+        "value": "0 6px 14px -8px color-mix(in srgb,var(--pc) 60%,transparent)",
+        "purpose": "Part chips glow in their spectral colour."
+      }
+    ],
+    "materials": [
+      {
+        "name": "glass",
+        "value": "background:rgba(255,255,255,.48);backdrop-filter:blur(22px) saturate(170%);border:1px solid rgba(255,255,255,.85);::before linear-gradient(180deg,rgba(255,255,255,.65),transparent 38%) soft-light",
+        "purpose": "Every pane-level surface; must sit over the light field."
+      },
+      {
+        "name": "light-field",
+        "value": "five fixed circles, blur(64px), opacity .75: b1/b4 level-soft, b2 #ffd9bf, b3 #f5c8e6, b5 #bcd0ff; colour transitions 1.2s",
+        "purpose": "The light the glass refracts; follows the current level."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Every transition and entrance."
+      },
+      {
+        "name": "control-transition",
+        "value": ".25s",
+        "purpose": "Buttons, rail items, toggles."
+      },
+      {
+        "name": "ray-draw",
+        "value": "draw .55s, stagger 80ms from .35s",
+        "purpose": "Prism rays."
+      },
+      {
+        "name": "chip-fan",
+        "value": "fan .6s (translateX -18px, scale .92, blur 4px → none), stagger 90ms from .45s",
+        "purpose": "Part chips and operators."
+      },
+      {
+        "name": "prism-glint",
+        "value": "glint 1.1s at .15s",
+        "purpose": "Prism body brightens on reveal."
+      },
+      {
+        "name": "step-rise",
+        "value": "step .45s (translateY 6px → 0)",
+        "purpose": "Step list rows."
+      },
+      {
+        "name": "arc-draw",
+        "value": "draw .7s, stagger .7s",
+        "purpose": "Number-line jumps."
+      },
+      {
+        "name": "shake",
+        "value": ".32s, -6px / 4px",
+        "purpose": "Wrong answer field."
+      },
+      {
+        "name": "field-shift",
+        "value": "background-color 1.2s, transform 1.6s",
+        "purpose": "Light field on level change."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all durations .01ms, delays 0",
+        "purpose": "prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "panes-stack",
+        "value": "1180px"
+      },
+      {
+        "name": "mobile",
+        "value": "820px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single forward action in a pane (Check, Next step, Start).",
+      "html": "<button class=\"ds-btn-pri\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12.5 4.5 4.5L19 7.5\"/></svg>ตรวจ</button>",
+      "css": ".ds-btn-pri{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;font-weight:500;font-size:14.5px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),background .25s;background:linear-gradient(180deg,#2a3060,#151a3a);color:#fff;border:1px solid rgba(20,24,52,.9);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 8px 18px -8px rgba(20,24,58,.6)}.ds-btn-pri:hover{background:linear-gradient(180deg,#323a72,#1b2147)}.ds-btn-pri:active{transform:translateY(1px)}.ds-btn-pri:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "White glass key for supporting actions (Hint, Show all).",
+      "html": "<button class=\"ds-btn\">ใบ้ทีละขั้น</button>",
+      "css": ".ds-btn{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;font-weight:500;font-size:14.5px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),background .25s;background:rgba(255,255,255,.62);color:#141833;border:1px solid rgba(255,255,255,.9);box-shadow:0 1px 0 #fff inset,0 4px 12px -6px rgba(24,32,88,.25)}.ds-btn:hover{background:rgba(255,255,255,.92);box-shadow:0 1px 0 #fff inset,0 8px 18px -8px rgba(24,32,88,.32)}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Quiet actions: new example, new problem, dismiss.",
+      "html": "<button class=\"ds-btn-ghost\">ข้อใหม่</button>",
+      "css": ".ds-btn-ghost{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:12px;font-weight:500;font-size:14.5px;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),background .25s;background:none;border:1px solid transparent;color:#3b4163}.ds-btn-ghost:hover{background:rgba(255,255,255,.6)}.ds-btn-ghost:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Answer Field",
+      "kind": "input",
+      "refersTo": "answer-field",
+      "description": "Primary input; tabular numerals, inset well, blue focus ring.",
+      "html": "<div class=\"ds-field\"><input class=\"ds-ans\" placeholder=\"คำตอบ\" inputmode=\"decimal\"></div>",
+      "css": ".ds-field{background:#f3f5fb radial-gradient(circle at 15% 20%,#9fe3d1,transparent 55%),radial-gradient(circle at 85% 30%,#ffd9bf,transparent 50%),radial-gradient(circle at 50% 100%,#f5c8e6,transparent 55%);padding:24px;}.ds-ans{font-family:'Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-size:30px;font-weight:600;padding:8px 16px;width:200px;border-radius:16px;border:1px solid rgba(28,36,84,.14);background:rgba(255,255,255,.82);color:#141833;outline:none;box-shadow:inset 0 2px 6px rgba(24,32,88,.08);transition:border-color .2s,box-shadow .2s}.ds-ans::placeholder{color:#8a90ad}.ds-ans:focus{border-color:#2f5bea;box-shadow:inset 0 2px 6px rgba(24,32,88,.08),0 0 0 4px rgba(47,91,234,.14)}"
+    },
+    {
+      "name": "Segmented Tabs",
+      "kind": "nav",
+      "refersTo": "tab-active",
+      "description": "Learn / Test view switch in the top bar.",
+      "html": "<nav class=\"ds-tabs\"><button class=\"on\">เรียนทีละเทคนิค</button><button>ทดสอบรวม</button></nav>",
+      "css": ".ds-tabs{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:inline-flex;gap:2px;padding:3px;border-radius:12px;background:rgba(28,36,84,.06)}.ds-tabs button{font:inherit;border:0;background:none;padding:6px 14px;border-radius:9px;color:#5a6082;font-weight:500;font-size:14.5px;cursor:pointer;transition:background .3s cubic-bezier(.16,1,.3,1),color .3s}.ds-tabs button:hover{color:#141833}.ds-tabs button.on{background:rgba(255,255,255,.78);color:#141833;box-shadow:0 1px 0 #fff inset,0 2px 8px -2px rgba(24,32,88,.18)}.ds-tabs button:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Rail Item with Beads",
+      "kind": "nav",
+      "refersTo": "rail-item-active",
+      "description": "Technique in the rail: English name, Thai caption, five progress beads in the level hue.",
+      "html": "<div class=\"ds-railwrap\"><button class=\"ds-tbtn on\" style=\"--lc:#a35d00\"><span class=\"nm\"><b>Split &amp; Multiply</b><small>แยกคูณ (Distributive)</small></span><span class=\"beads\"><i class=\"f\"></i><i class=\"f\"></i><i></i><i></i><i></i></span></button><button class=\"ds-tbtn\" style=\"--lc:#a35d00\"><span class=\"nm\"><b>Multiply by 11</b><small>คูณ 11 แบบแทรกตรงกลาง</small></span><span class=\"beads\"><i></i><i></i><i></i><i></i><i></i></span></button></div>",
+      "css": ".ds-railwrap{background:#f3f5fb radial-gradient(circle at 15% 20%,#9fe3d1,transparent 55%),radial-gradient(circle at 85% 30%,#ffd9bf,transparent 50%),radial-gradient(circle at 50% 100%,#f5c8e6,transparent 55%);padding:24px;width:300px}.ds-tbtn{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:12px;color:#141833;cursor:pointer;transition:background .25s cubic-bezier(.16,1,.3,1)}.ds-tbtn:hover{background:rgba(255,255,255,.55)}.ds-tbtn.on{background:rgba(255,255,255,.9);box-shadow:0 1px 0 #fff inset,0 6px 16px -8px rgba(24,32,88,.25)}.ds-tbtn .nm{flex:1;min-width:0}.ds-tbtn b{display:block;font-weight:600;font-size:14px;line-height:1.35}.ds-tbtn small{display:block;color:#5a6082;font-size:12.5px;line-height:1.35}.ds-tbtn .beads{display:flex;gap:3px}.ds-tbtn .beads i{width:8px;height:8px;border-radius:50%;background:rgba(28,36,84,.1);box-shadow:inset 0 0 0 1.2px rgba(28,36,84,.38)}.ds-tbtn .beads i.f{background:var(--lc);box-shadow:0 0 0 2px color-mix(in srgb,var(--lc) 20%,transparent)}.ds-tbtn:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Level Toggle Chip",
+      "kind": "chip",
+      "refersTo": "toggle-chip",
+      "description": "Mixed-test level and mode toggles; swatch carries the level hue.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-tog\" aria-pressed=\"true\" style=\"--lc:#0b7f6a\"><i></i>พื้นฐาน</button><button class=\"ds-tog\" aria-pressed=\"false\" style=\"--lc:#6a3be0\"><i></i>ขั้นสูง</button></div>",
+      "css": ".ds-seg{display:inline-flex;gap:6px}.ds-tog{font-family:'Anuphan','Manrope',system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(28,36,84,.12);background:rgba(255,255,255,.55);border-radius:12px;padding:7px 14px;font-weight:500;font-size:14.5px;color:#3b4163;cursor:pointer;transition:all .25s cubic-bezier(.16,1,.3,1)}.ds-tog i{width:9px;height:9px;border-radius:50%;background:var(--lc);opacity:.35}.ds-tog[aria-pressed=true]{background:rgba(255,255,255,.95);color:#141833;border-color:color-mix(in srgb,var(--lc) 40%,transparent);box-shadow:0 1px 0 #fff inset,0 6px 14px -8px rgba(24,32,88,.3)}.ds-tog[aria-pressed=true] i{opacity:1}.ds-tog:hover{background:rgba(255,255,255,.8)}.ds-tog:focus-visible{outline:2px solid #2f5bea;outline-offset:2px}"
+    },
+    {
+      "name": "Glass Pane",
+      "kind": "card",
+      "refersTo": "glass-pane",
+      "description": "Frosted working pane over the light field.",
+      "html": "<div class=\"ds-stage\"><section class=\"ds-pane\"><h2>ลองทำเอง</h2><div class=\"q\">86 × 4 <span>= ?</span></div></section></div>",
+      "css": ".ds-stage{background:#f3f5fb radial-gradient(circle at 15% 20%,#9fe3d1,transparent 55%),radial-gradient(circle at 85% 30%,#ffd9bf,transparent 50%),radial-gradient(circle at 50% 100%,#f5c8e6,transparent 55%);padding:24px;}.ds-pane{background:rgba(255,255,255,.48);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border:1px solid rgba(255,255,255,.85);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 -1px 0 rgba(20,28,70,.04) inset,0 18px 40px -18px rgba(24,32,88,.22),0 3px 8px -3px rgba(24,32,88,.08);font-family:'Anuphan','Manrope',system-ui,sans-serif;position:relative;border-radius:26px;padding:20px 22px 22px;color:#141833}.ds-pane::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 38%);mix-blend-mode:soft-light}.ds-pane h2{margin:0 0 6px;font-size:15px;font-weight:600;color:#3b4163}.ds-pane .q{font-family:'Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-weight:300;font-size:46px;letter-spacing:-1.2px;line-height:1.1}.ds-pane .q span{color:#5a6082}"
+    },
+    {
+      "name": "Prism Split",
+      "kind": "custom",
+      "refersTo": "part-chip",
+      "description": "Signature: source number through a glass prism into spectral part chips; rays draw and chips fan in.",
+      "html": "<div class=\"ds-prism\"><span class=\"src\">38</span><svg viewBox=\"0 0 150 84\" width=\"130\" aria-hidden=\"true\"><defs><linearGradient id=\"dspg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fff\" stop-opacity=\".95\"/><stop offset=\".55\" stop-color=\"#e6ecff\" stop-opacity=\".7\"/><stop offset=\"1\" stop-color=\"#cfd8f5\" stop-opacity=\".85\"/></linearGradient></defs><path class=\"ray\" pathLength=\"1\" d=\"M0 50 L46 46\" stroke=\"#a6acc6\" stroke-width=\"2.4\"/><path d=\"M66 8 L94 70 L38 70 Z\" fill=\"url(#dspg)\" stroke=\"rgba(255,255,255,.95)\" stroke-width=\"2\" stroke-linejoin=\"round\" style=\"filter:drop-shadow(0 6px 10px rgba(24,32,88,.22))\"/><path d=\"M66 12 L42 66\" stroke=\"#fff\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M66 8 L94 70 L38 70 Z\" fill=\"none\" stroke=\"rgba(20,24,51,.18)\" stroke-width=\"1\"/><path class=\"ray\" pathLength=\"1\" d=\"M81 40 L150 30\" stroke=\"#2f5bea\" stroke-width=\"2.6\" style=\"animation-delay:.35s\"/><path class=\"ray\" pathLength=\"1\" d=\"M86 50 L150 60\" stroke=\"#c4510f\" stroke-width=\"2.6\" style=\"animation-delay:.43s\"/></svg><span class=\"chip\" style=\"--pc:#2f5bea;animation-delay:.45s\">30</span><span class=\"op\" style=\"animation-delay:.54s\">+</span><span class=\"chip\" style=\"--pc:#c4510f;animation-delay:.63s\">8</span></div>",
+      "css": ".ds-prism{display:flex;align-items:center;gap:6px;padding:12px;background:#fff}.ds-prism .src,.ds-prism .chip{font-family:'Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-weight:700;font-size:19px;padding:6px 12px;border-radius:12px}.ds-prism .src{background:rgba(255,255,255,.85);border:1px solid rgba(28,36,84,.1);box-shadow:0 4px 10px -6px rgba(24,32,88,.3);color:#141833}.ds-prism .chip{color:var(--pc);background:color-mix(in srgb,var(--pc) 9%,rgba(255,255,255,.85));border:1px solid color-mix(in srgb,var(--pc) 28%,transparent);box-shadow:0 6px 14px -8px color-mix(in srgb,var(--pc) 60%,transparent);animation:dsfan .6s cubic-bezier(.16,1,.3,1) both}.ds-prism .op{font-family:'Manrope',system-ui,sans-serif;font-variant-numeric:tabular-nums;font-weight:500;font-size:18px;color:#5a6082;animation:dsfan .6s cubic-bezier(.16,1,.3,1) both}.ds-prism .ray{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:dsdraw .55s cubic-bezier(.16,1,.3,1) forwards}@keyframes dsdraw{to{stroke-dashoffset:0}}@keyframes dsfan{from{opacity:0;transform:translateX(-18px) scale(.92);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}@media (prefers-reduced-motion:reduce){.ds-prism *{animation-duration:.01ms!important;animation-delay:0s!important}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Light Through a Prism",
+    "overview": "Every mental-math technique is the act of splitting a number into easy parts, and this system makes that split literal: white light enters a small glass prism and leaves as coloured parts. The interface around it is light liquid glass. Frosted panes sit over a white ground lit by soft, blurred colour pools, and they pick up that colour through backdrop blur and saturation. Nothing is opaque except the text and the one dark primary button.\n\nIt is an Operate surface, dense but calm: a sticky glass top bar, a glass rail of techniques, and two working panes side by side. Numbers carry the weight. They are set large and light in Manrope with tabular figures, while Thai UI text runs in Anuphan at ordinary reading sizes. Colour is reserved for meaning: three spectral part colours for decomposed numbers, three level hues for Basic / Intermediate / Advanced, and green/red only for right/wrong.\n\nMotion is orchestration, not decoration. Rays draw, chips fan out, steps rise in sequence, all on one long-tail ease (cubic-bezier(.16,1,.3,1)); the colour field drifts only when the level changes. Reduced-motion users get everything instantly.",
+    "keyCharacteristics": [
+      "Frosted white glass panes (blur 22px, saturate 170%) with a specular top edge and soft lifted shadow.",
+      "A fixed light field of five blurred colour pools; two of them take the current level's soft hue.",
+      "The Prism Split: source chip → glass prism → coloured part chips, drawn per reveal.",
+      "Spectral part roles (blue / orange / magenta) used identically in chips, step text, rays, number-line arcs and area models.",
+      "Manrope tabular figures for every number; Anuphan for every Thai word.",
+      "One stroke-icon family (1.8px, round caps) authored as inline SVG symbols."
+    ],
+    "rules": [
+      {
+        "name": "The Spectral Roles Rule",
+        "body": "A decomposed part is always blue, then orange, then magenta, in that order, everywhere it appears: chip, ray, step text, arc, area-model label. Never use these three for chrome, status or level.",
+        "section": "colors"
+      },
+      {
+        "name": "The Colour Means Something Rule",
+        "body": "Level hues mark level, green/red mark correctness, part colours mark parts. Panes, buttons and the bar are white glass or ink; none of them takes an accent fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Number Rule",
+        "body": "Every number (problems, chips, steps, stats, beads count, scores, SVG labels) is Manrope with `tnum`. Thai text is never set in Manrope, and numbers are never set in Anuphan.",
+        "section": "typography"
+      },
+      {
+        "name": "The Light Problem Rule",
+        "body": "Problems are thin (300) and large; weight is spent only on the answer once revealed and on part chips.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glass Needs Light Rule",
+        "body": "Glass panes only sit over the coloured field. Never put a glass pane on flat ground or over another glass pane; nested surfaces are brighter opaque-ish white, not another blur layer.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Soft Lift Rule",
+        "body": "All drops are soft, negative-spread and indigo-tinted. No hard offset shadows, no pure-black shadows.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** colour every decomposed part by its spectral role (blue, orange, magenta in order), identically in chips, rays, steps, arcs and area models.",
+      "**Do** set every number in Manrope with tabular figures, and every Thai string in Anuphan.",
+      "**Do** place glass panes over the coloured light field, with blur(22px) saturate(170%), a 1px white edge and the Glass Pane shadow.",
+      "**Do** tint the field and level markers with the current level's hue (teal / amber / violet); fall back to ink and periwinkle when no level applies.",
+      "**Do** keep one ink primary button per pane; everything else is secondary glass or ghost.",
+      "**Do** run motion on cubic-bezier(.16,1,.3,1) with staggered delays, and honour prefers-reduced-motion.",
+      "**Do** draw icons as single-stroke inline SVG (1.8px, round caps and joins, 18px)."
+    ],
+    "donts": [
+      "**Don't** use the part colours for buttons, status, levels or decoration.",
+      "**Don't** stack glass on glass or put glass over flat ground.",
+      "**Don't** use hard offset or black shadows; lifts are soft and indigo-tinted.",
+      "**Don't** add accent-filled panes or a grey sidebar; panes and rail stay white glass.",
+      "**Don't** let the prism row wrap; it scrolls instead.",
+      "**Don't** use icon fonts, emoji or glyph characters as icons."
+    ]
+  }
+}

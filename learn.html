@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เรียนเทคนิค · Calc Dojo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="wrap">
+  <aside class="rail glass" id="side" aria-label="เทคนิค"></aside>
+  <main id="main"></main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/core.js"></script>
+<script src="js/store.js"></script>
+<script src="js/shell.js"></script>
+<script>
+let cur=T[0].id;
+try{const h=location.hash.slice(1);if(byId[h])cur=h}catch(e){}
+function setLevelLight(lv){const l=LV[lv],d=document.documentElement.style;d.setProperty('--lvl',l.col);d.setProperty('--lvl-soft',l.soft)}
+function renderSide(){
+  
+  let h='';LV.forEach((l,li)=>{h+=`<div class="grp" style="color:${l.col}">${I('prism')}<span style="color:var(--ink-2)">${l.th}</span></div>`;
+    T.filter(t=>t.lv===li).forEach(t=>{const s=st(t.id),m=mastered(t.id);
+      h+=`<button class="tbtn ${t.id===cur?'on':''}" style="--lc:${l.col}" data-id="${t.id}" ${t.id===cur?'aria-current="true"':''}><span class="nm"><b>${t.en}</b><small>${t.th}</small></span>${m?`<span class="passed" title="ผ่านแล้ว">${I('pass')}</span>`:`<span class="beads" aria-label="ถูกติดกัน ${s.s} จาก ${MASTER}">${Array.from({length:MASTER},(_,i)=>`<i class="${i<s.s?'f':''}"></i>`).join('')}</span>`}</button>`})});
+  side.innerHTML=h;
+  side.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{cur=b.dataset.id;setHash(cur);renderSide();renderLearn();window.scrollTo({top:0,behavior:'smooth'})})}
+function setHash(h){try{history.replaceState(null,'','#'+h)}catch(e){}}
+
+
+let ex,exStep,pr,prHintN,prTries,prT0,prDone;
+function renderLearn(){
+  const t=byId[cur],l=LV[t.lv];setLevelLight(t.lv);
+  let seen=false;try{seen=localStorage.getItem('mm-lab-seen')==='1'}catch(e){}
+  const fresh=!seen&&!T.some(x=>S[x.id]&&(S[x.id].c||S[x.id].w));
+  main.innerHTML=`
+  <section class="head">
+    <h1>${t.en}</h1><p class="th">${t.th}</p>
+    <p class="idea">${t.idea}</p>
+    <p class="meta"><span class="lv"><i class="dot"></i>${l.th}</span><span>ใช้เมื่อ: ${t.use}</span></p>
+  </section>
+  ${fresh?`<div class="note glass" id="note">${I('info')}<div style="flex:1"><b>วิธีใช้:</b> ดูตัวอย่างทางซ้ายทีละขั้น แล้วลองทำโจทย์ทางขวา ทำถูกติดกัน ${MASTER} ข้อโดยไม่ใช้คำใบ้ถือว่าผ่านเทคนิคนั้น พอคล่องแล้วไปที่หน้า “เล่น” เพื่อจับเวลาและไต่สาย</div><button class="btn ghost" id="noteX">เข้าใจแล้ว</button></div>`:''}
+  <div id="recBox"></div>
+  <div class="panes">
+    <section class="pane glass" aria-labelledby="exH">
+      <div class="pane-h"><h2 id="exH">ตัวอย่างทีละขั้น</h2><button class="btn ghost" id="exNew">${I('refresh')}ตัวอย่างใหม่</button></div>
+      <div class="q" id="exQ"></div><div id="exPrism"></div><div class="viz" id="exViz"></div><ol class="steps" id="exSteps"></ol>
+      <div class="row" id="exRow"><button class="btn pri" id="exNext">ขั้นต่อไป ${I('next')}</button><button class="btn" id="exAll">${I('all')}แสดงทั้งหมด</button></div>
+    </section>
+    <section class="pane glass" aria-labelledby="prH">
+      <div class="pane-h"><h2 id="prH">ลองทำเอง</h2><div class="pstat" id="pStat"></div></div>
+      <div class="q" id="prQ"></div>
+      <div class="row"><input class="ans" id="prIn" inputmode="decimal" autocomplete="off" aria-label="คำตอบ" placeholder="คำตอบ"><button class="btn pri" id="prGo">${I('check')}ตรวจ</button></div>
+      <div class="row" style="margin-top:10px"><button class="btn" id="prHint">${I('hint')}ใบ้ทีละขั้น</button><button class="btn ghost" id="prSkip">${I('refresh')}ข้อใหม่</button></div>
+      <div class="fb" id="prFb" aria-live="polite"></div><div id="prPrism"></div><div class="viz" id="prViz"></div><ol class="steps" id="prSteps"></ol>
+      <p class="hint-line"><span class="kbd">Enter</span> ตรวจคำตอบ แล้วกดอีกครั้งเพื่อไปข้อต่อไป</p>
+    </section>
+  </div>`;
+  exNew.onclick=newEx;bindEx();if(window.noteX)noteX.onclick=()=>{try{localStorage.setItem('mm-lab-seen','1')}catch(e){}note.remove()};
+  prGo.onclick=checkPr;prSkip.onclick=newPr;prHint.onclick=hintPr;
+  prIn.onkeydown=e=>{if(e.key==='Enter'){prDone?newPr():checkPr()}};
+  newEx();newPr();renderRec();prIn.focus({preventScroll:true})}
+const qHTML=(q,ans)=>`<span>${q}</span> <span class="eq">=</span> ${ans===undefined?'<span class="eq">?</span>':`<span class="res">${f(ans)}</span>`}`;
+const EXROW=`<button class="btn pri" id="exNext">ขั้นต่อไป ${'NEXTICON'}</button><button class="btn" id="exAll">${'ALLICON'}แสดงทั้งหมด</button>`;
+function bindEx(){exNext.onclick=()=>stepEx(1);exAll.onclick=()=>stepEx(99)}
+function newEx(){ex=byId[cur].gen();exStep=0;exQ.innerHTML=qHTML(ex.q);exPrism.innerHTML='';exViz.innerHTML='';exSteps.innerHTML='';exRow.innerHTML=EXROW.replace('NEXTICON',I('next')).replace('ALLICON',I('all'));bindEx()}
+function stepEx(n){for(let i=0;i<n&&exStep<ex.steps.length;i++){
+  if(exStep===0){exPrism.innerHTML=prismHTML(ex.split);if(ex.viz)exViz.innerHTML=vizHTML(ex.viz,exViz)}
+  exSteps.insertAdjacentHTML('beforeend',`<li><span>${ex.steps[exStep++]}</span></li>`)}
+  if(exStep>=ex.steps.length){exQ.innerHTML=qHTML(ex.q,ex.ans);exRow.innerHTML=`<button class="btn" id="exAgain">${I('refresh')}ดูอีกตัวอย่าง</button>`;exAgain.onclick=newEx}}
+function pstat(){const s=st(cur);pStat.innerHTML=`<span>ติดกัน <b>${s.s}</b>/${MASTER}</span><span>ถูก <b>${s.c}</b></span><span>ผิด <b>${s.w}</b></span>`}
+function newPr(){pr=byId[cur].gen();prHintN=0;prTries=0;prDone=false;prT0=performance.now();
+  prQ.innerHTML=qHTML(pr.q);prIn.value='';prIn.className='ans';prFb.textContent='';prFb.className='fb';prPrism.innerHTML='';prViz.innerHTML='';prSteps.innerHTML='';prHint.disabled=false;prGo.disabled=false;pstat();prIn.focus({preventScroll:true})}
+const parse=v=>parseFloat(String(v).replace(/[, ]/g,''));
+const same=(a,b)=>Math.abs(a-b)<1e-9;
+function showSol(){if(!prPrism.innerHTML)prPrism.innerHTML=prismHTML(pr.split);if(!prViz.innerHTML)prViz.innerHTML=vizHTML(pr.viz,prViz);prSteps.innerHTML=pr.steps.map(s=>`<li><span>${s}</span></li>`).join('')}
+function finishPr(ok,msg){prDone=true;prHint.disabled=true;prGo.disabled=true;prQ.innerHTML=qHTML(pr.q,pr.ans);prFb.className='fb '+(ok?'ok':'bad');prFb.innerHTML=msg+` <span class="k">· Enter ไปข้อต่อไป</span>`;pstat();prIn.focus({preventScroll:true})}
+function checkPr(){if(prDone)return;const v=parse(prIn.value);if(isNaN(v)){prFb.className='fb bad';prFb.textContent='พิมพ์ตัวเลขก่อนกดตรวจ';return}
+  if(same(v,pr.ans)){prIn.className='ans ok';const sec=((performance.now()-prT0)/1000).toFixed(1);
+    const clean=prHintN===0&&prTries===0;record(cur,clean);
+    let msg=clean?`ถูก ใช้เวลา ${sec} วินาที`:`ถูกแล้ว (${sec} วินาที) แต่ใช้คำใบ้หรือตอบผิดไปก่อน จึงไม่นับเป็นข้อติดกัน`;
+    if(clean&&st(cur).s===MASTER&&st(cur).b===MASTER)msg+=` · ผ่านเทคนิคนี้แล้ว`;
+    finishPr(true,msg);if(!clean)showSol()}
+  else{prTries++;prIn.className='ans';void prIn.offsetWidth;prIn.className='ans bad';
+    if(prTries<2){prFb.className='fb bad';prFb.textContent='ยังไม่ถูก ลองอีกครั้ง หรือกด “ใบ้ทีละขั้น”'}
+    else{record(cur,false);showSol();finishPr(false,`คำตอบคือ ${f(pr.ans)} ดูวิธีคิดด้านล่าง`)}}}
+function hintPr(){if(prDone)return;if(prHintN===0)prPrism.innerHTML=prismHTML(pr.split)
+  prSteps.insertAdjacentHTML('beforeend',`<li><span>${pr.steps[prHintN++]}</span></li>`);
+  if(prHintN>=pr.steps.length){if(pr.viz)prViz.innerHTML=vizHTML(pr.viz,prViz);record(cur,false);finishPr(false,'เปิดเฉลยครบแล้ว ลองข้อใหม่ดู')}else prIn.focus({preventScroll:true})}
+
+/* ---------- recommendation: what to practise next ---------- */
+function recommend(){
+  const acc=x=>x.s.c/(x.s.c+x.s.w);
+  const rows=T.map(t=>({t,s:st(t.id)}));
+  const weak=rows.filter(x=>!mastered(x.t.id)&&(x.s.c+x.s.w)>=3&&acc(x)<.7).sort((a,b)=>acc(a)-acc(b))[0];
+  if(weak)return{t:weak.t,why:`ถูกแค่ ${Math.round(acc(weak)*100)}% จาก ${weak.s.c+weak.s.w} ข้อ ควรฝึกซ้ำก่อนไปต่อ`};
+  const next=T.find(t=>!mastered(t.id));
+  if(next){const s=st(next.id);return{t:next,why:s.c+s.w?`ยังไม่ผ่าน (ติดกัน ${s.s}/${MASTER}) ฝึกต่อให้ครบ`:'เทคนิคถัดไปตามลำดับ'}}
+  return{t:null};
+}
+function renderRec(){
+  if(!window.recBox)return;const r=recommend();
+  if(r.t&&r.t.id===cur){recBox.innerHTML='';return}
+  recBox.innerHTML=r.t
+   ?`<div class="note glass">${I('prism')}<div style="flex:1"><b>แนะนำให้ฝึกต่อ: ${r.t.en}</b> · ${r.why}</div><button class="btn" id="recGo">ไปฝึก ${I('next')}</button></div>`
+   :`<div class="note glass">${I('prism')}<div style="flex:1"><b>ผ่านครบทุกเทคนิคแล้ว</b> · ลองเล่น Sprint ระดับขั้นสูง</div><button class="btn" id="recGo">ไปเล่น ${I('next')}</button></div>`;
+  recBox.querySelector('#recGo').onclick=()=>{if(r.t){cur=r.t.id;setHash(cur);renderSide();renderLearn();window.scrollTo({top:0})}else{setPrefs({lv:[false,false,true]});location.href='play.html#sprint'}};
+}
+/* ---------- boot ---------- */
+window.onData=()=>{updateChip();renderSide();if(window.pStat){pstat();renderRec()}};
+mountShell('learn');renderSide();renderLearn();initAuth();
+</script>
+</body>
+</html>

@@ -1,14 +1,16 @@
 # mental-math
 
-**Mental Math Lab** — interactive website for learning mental arithmetic, from basic to advanced.
+**Calc Dojo** — interactive website for learning mental arithmetic, from basic to advanced.
 
 - 18 techniques in 3 levels (Basic / Intermediate / Advanced), each with an explanation, a step-by-step worked example and visuals (number line, area model, "prism split")
 - Random practice problems with step-by-step hints; 5 correct in a row = technique passed
-- Mixed test: Sprint 60 s or untimed with solutions, plus a review summary
+- Home page = start the game: belt + XP, daily goal and day streak, GitHub-style heatmap (volume or accuracy), personal bests, weekly accuracy trend
+- Play page: Sprint 60 s, untimed with solutions, or a belt exam (6 belts, white to black); each run is saved and compared with your best
+- Learn page holds the 18 techniques
 - "Recommended next" strip: points to the technique you are weakest at (under 70% after 3+ attempts), else the next one not yet passed
 - Optional login (email + password via Supabase) to sync progress across devices. Without login everything still works and is saved in the browser (localStorage).
 
-Single self-contained `index.html` — open it in a browser or host it on GitHub Pages.
+Static site (`index.html`, `learn.html`, `play.html` + `css/`, `js/`). Open `index.html` or host on GitHub Pages. Tables: `supabase/schema.sql` (technique_progress, daily_stats, play_runs).
 
 ## Supabase setup
 

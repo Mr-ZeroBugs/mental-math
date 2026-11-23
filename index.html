@@ -3,768 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mental Math Lab — ฝึกคิดเลขในใจ</title>
+<title>Calc Dojo · ลานฝึกคิดเลขในใจ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ground:#f3f5fb;
-  --ink:#141833; --ink-2:#3b4163; --mute:#5a6082;
-  --glass:rgba(255,255,255,.48); --glass-hi:rgba(255,255,255,.78); --glass-edge:rgba(255,255,255,.85);
-  --hair:rgba(28,36,84,.10);
-  --c1:#2f5bea; --c2:#c4510f; --c3:#b0247f;
-  --l0:#0b7f6a; --l1:#a35d00; --l2:#6a3be0;
-  --lvl:var(--l0);
-  --ok:#14803c; --bad:#cf2d2d;
-  --r-xl:26px; --r-lg:20px; --r-md:14px; --r-sm:10px;
-  --num:'Manrope',system-ui,sans-serif;
-  --ui:'Anuphan','Manrope',system-ui,sans-serif;
-  --ease:cubic-bezier(.16,1,.3,1);
-  --shadow:0 1px 0 rgba(255,255,255,.9) inset,0 -1px 0 rgba(20,28,70,.04) inset,0 18px 40px -18px rgba(24,32,88,.22),0 3px 8px -3px rgba(24,32,88,.08);
-}
-*{box-sizing:border-box}
-html{color-scheme:light}
-body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.6;caret-color:var(--c1);-webkit-font-smoothing:antialiased}
-::selection{background:rgba(47,91,234,.18);color:var(--ink)}
-*{scrollbar-width:thin;scrollbar-color:rgba(28,36,84,.22) transparent}
-::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:rgba(28,36,84,.2);border-radius:10px;border:3px solid transparent;background-clip:content-box}
-button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--c1);outline-offset:2px;border-radius:8px}
-.n{font-family:var(--num);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
-svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-/* ---- the light field the glass refracts ---- */
-.field{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.field i{position:absolute;border-radius:50%;filter:blur(64px);opacity:.75;transition:background-color 1.2s var(--ease),transform 1.6s var(--ease)}
-.field .b1{width:46vw;height:46vw;left:-12vw;top:-18vw;background:var(--lvl-soft,#9fe3d1)}
-.field .b2{width:38vw;height:38vw;right:-10vw;top:8vh;background:#ffd9bf}
-.field .b3{width:34vw;height:34vw;left:30vw;bottom:-16vw;background:#f5c8e6}
-.field .b4{width:30vw;height:30vw;right:18vw;bottom:-8vw;background:var(--lvl-soft,#9fe3d1)}
-.field .b5{width:26vw;height:26vw;left:38vw;top:-10vw;background:#bcd0ff}
-
-/* ---- glass ---- */
-.glass{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--glass-edge);box-shadow:var(--shadow);position:relative}
-.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 38%);mix-blend-mode:soft-light}
-
-/* ---- shell ---- */
-.top{position:sticky;top:12px;z-index:10;margin:12px 16px 0;border-radius:var(--r-lg);display:flex;align-items:center;gap:22px;padding:10px 14px 10px 18px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.2px;white-space:nowrap}
-.brand svg{width:30px;height:26px}
-.tabs{display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(28,36,84,.06)}
-.tabs button{border:0;background:none;padding:6px 14px;border-radius:9px;color:var(--mute);font-weight:500;font-size:14.5px;transition:background .3s var(--ease),color .3s}
-.tabs button:hover{color:var(--ink)}
-.tabs button.on{background:var(--glass-hi);color:var(--ink);box-shadow:0 1px 0 #fff inset,0 2px 8px -2px rgba(24,32,88,.18)}
-.gstats{margin-left:auto;display:flex;gap:22px;font-size:12.5px;color:var(--mute);line-height:1.25}
-.gstats div{display:flex;flex-direction:column;align-items:flex-end}
-.gstats b{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:16px;font-weight:700;color:var(--ink)}
-.wrap{display:grid;grid-template-columns:286px minmax(0,1fr);gap:16px;padding:16px;align-items:start}
-.wrap.solo{grid-template-columns:minmax(0,1fr)}
-.wrap.solo main{max-width:1080px;width:100%;margin:0 auto}
-.rail{position:sticky;top:86px;border-radius:var(--r-xl);padding:14px 10px;max-height:calc(100vh - 102px);overflow:auto}
-.grp{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink-2);margin:14px 10px 6px}
-.grp:first-child{margin-top:4px}
-.grp svg{width:14px;height:14px}
-.tbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:12px;transition:background .25s var(--ease)}
-.tbtn:hover{background:rgba(255,255,255,.55)}
-.tbtn.on{background:rgba(255,255,255,.9);box-shadow:0 1px 0 #fff inset,0 6px 16px -8px rgba(24,32,88,.25)}
-.tbtn .nm{flex:1;min-width:0}
-.tbtn .nm b{display:block;font-weight:600;font-size:14px;line-height:1.35}
-.tbtn .nm small{display:block;color:var(--mute);font-size:12.5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.beads{display:flex;gap:3px}
-.beads i{width:8px;height:8px;border-radius:50%;background:rgba(28,36,84,.1);box-shadow:inset 0 0 0 1.2px rgba(28,36,84,.38)}
-.beads i.f{background:var(--lc);box-shadow:0 0 0 2px color-mix(in srgb,var(--lc) 20%,transparent)}
-.passed{color:var(--lc);display:flex}
-.passed svg{width:17px;height:17px}
-
-main{min-width:0}
-.head{padding:22px 26px 6px}
-h1{font-size:34px;line-height:1.15;letter-spacing:-.6px;margin:0;font-weight:700;text-wrap:balance}
-.th{font-size:18px;color:var(--ink-2);margin:4px 0 14px;font-weight:500}
-.idea{font-size:17px;max-width:68ch;margin:0 0 10px;color:var(--ink)}
-.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--mute);margin:0}
-.meta span{display:inline-flex;align-items:center;gap:6px}
-.meta .lv{color:var(--lvl);font-weight:600}
-.meta .dot{width:8px;height:8px;border-radius:50%;background:var(--lvl)}
-.panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:18px}
-.pane{border-radius:var(--r-xl);padding:20px 22px 22px;min-width:0}
-.pane-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
-.pane-h h2{margin:0;font-size:15px;font-weight:600;color:var(--ink-2)}
-.q{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:300;font-size:46px;letter-spacing:-1.2px;line-height:1.1;margin:8px 0 6px}
-.q .eq{color:var(--mute)}
-.q .res{font-weight:700;color:var(--ink)}
-.q.huge{font-size:64px;text-align:center;margin:18px 0 14px;letter-spacing:-2px}
-
-/* buttons */
-.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.62);padding:8px 14px;border-radius:12px;font-weight:500;font-size:14.5px;box-shadow:0 1px 0 #fff inset,0 4px 12px -6px rgba(24,32,88,.25);transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s}
-.btn:hover{background:rgba(255,255,255,.92);box-shadow:0 1px 0 #fff inset,0 8px 18px -8px rgba(24,32,88,.32)}
-.btn:active{transform:translateY(1px)}
-.btn.pri{background:linear-gradient(180deg,#2a3060,#151a3a);color:#fff;border-color:rgba(20,24,52,.9);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 8px 18px -8px rgba(20,24,58,.6)}
-.btn.pri:hover{background:linear-gradient(180deg,#323a72,#1b2147)}
-.btn.ghost{background:none;border-color:transparent;box-shadow:none;color:var(--ink-2)}
-.btn.ghost:hover{background:rgba(255,255,255,.6)}
-.btn:disabled,.btn.pri:disabled{background:rgba(28,36,84,.05);border-color:rgba(28,36,84,.08);color:#8a90ad;box-shadow:none;cursor:default;transform:none}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-
-/* answer field */
-.ans{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:30px;font-weight:600;padding:8px 16px;width:200px;border-radius:16px;border:1px solid rgba(28,36,84,.14);background:rgba(255,255,255,.82);color:var(--ink);outline:none;box-shadow:inset 0 2px 6px rgba(24,32,88,.08);transition:border-color .2s,box-shadow .2s}
-.ans::placeholder{color:#8a90ad}
-.ans:focus{border-color:var(--c1);box-shadow:inset 0 2px 6px rgba(24,32,88,.08),0 0 0 4px rgba(47,91,234,.14)}
-.ans.ok{border-color:var(--ok);box-shadow:0 0 0 4px rgba(20,128,60,.14)}
-.ans.bad{border-color:var(--bad);animation:shake .32s var(--ease)}
-@keyframes shake{25%{transform:translateX(-6px)}70%{transform:translateX(4px)}}
-.fb{min-height:24px;margin-top:12px;font-weight:600;font-size:15px}
-.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
-.fb .k{color:var(--mute);font-weight:400}
-.pstat{display:flex;gap:14px;font-size:13px;color:var(--mute)}
-.pstat b{font-family:var(--num);color:var(--ink);font-weight:700}
-.kbd{display:inline-block;font-family:var(--num);font-size:12px;font-weight:600;border:1px solid rgba(28,36,84,.16);border-bottom-width:2px;border-radius:6px;padding:0 6px;color:var(--ink-2);background:rgba(255,255,255,.7)}
-.hint-line{font-size:13px;color:var(--mute);margin-top:14px}
-
-/* ---- the prism split ---- */
-.prism{display:flex;align-items:center;gap:4px;margin:6px 0 6px;min-height:84px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:4px 2px 8px}
-.prism .src,.prism .chip{white-space:nowrap;flex:none}
-
-.prism .body{transition:filter .6s var(--ease)}
-.prism.go .body{animation:glint 1.1s var(--ease) .15s both}
-@keyframes glint{0%{filter:brightness(1)}35%{filter:brightness(1.12) drop-shadow(0 0 10px rgba(255,255,255,.9))}100%{filter:brightness(1)}}
-.prism .src{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;font-size:19px;padding:6px 12px;border-radius:12px;background:rgba(255,255,255,.85);border:1px solid rgba(28,36,84,.1);box-shadow:0 4px 10px -6px rgba(24,32,88,.3)}
-.prism svg.pr{width:clamp(104px,22%,150px);min-width:104px;height:auto;aspect-ratio:150/84;flex:0 0 auto;overflow:visible;margin:0 2px}
-.prism .ray{fill:none;stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
-.prism.go .ray{animation:draw .55s var(--ease) forwards}
-.prism:not(.go) .ray{stroke-dashoffset:0}
-.prism .parts{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;flex:none}
-.chip{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;font-size:19px;padding:6px 12px;border-radius:12px;color:var(--pc);background:color-mix(in srgb,var(--pc) 9%,rgba(255,255,255,.85));border:1px solid color-mix(in srgb,var(--pc) 28%,transparent);box-shadow:0 6px 14px -8px color-mix(in srgb,var(--pc) 60%,transparent)}
-.op{font-family:var(--num);font-weight:500;font-size:18px;color:var(--mute);padding:0 2px}
-.prism.go .chip,.prism.go .op{animation:fan .6s var(--ease) both}
-@keyframes fan{from{opacity:.0;transform:translateX(-18px) scale(.92);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-@keyframes draw{to{stroke-dashoffset:0}}
-.split-note{font-size:13px;color:var(--mute);margin:0 0 4px}
-
-/* steps */
-.steps{list-style:none;padding:0;margin:10px 0 14px;counter-reset:s}
-.steps li{counter-increment:s;display:flex;gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid var(--hair);font-size:16.5px;animation:step .45s var(--ease) both}
-.steps li::before{content:counter(s);font-family:var(--num);font-size:12px;font-weight:700;color:var(--ink-2);background:rgba(255,255,255,.8);border:1px solid rgba(28,36,84,.1);border-radius:50%;width:24px;height:24px;flex:none;display:grid;place-items:center;transform:translateY(-2px)}
-.steps .m{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:500}
-.steps b{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:800;padding:1px 7px;border-radius:7px;background:rgba(20,128,60,.1);color:var(--ok)}
-@keyframes step{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-i.c1,i.c2,i.c3{font-style:normal;font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700}
-i.c1{color:var(--c1)} i.c2{color:var(--c2)} i.c3{color:var(--c3)}
-
-.viz{margin:8px 0 2px;overflow-x:auto}
-.viz svg{display:block;width:100%;height:auto}
-.viz text{font-family:'Manrope',sans-serif;font-variant-numeric:tabular-nums}
-.arc{fill:none;stroke-width:2.2;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .7s var(--ease) forwards}
-.fade{opacity:0;animation:fadein .45s var(--ease) forwards}
-@keyframes fadein{to{opacity:1}}
-
-/* first-run note */
-.note{display:flex;gap:14px;align-items:center;border-radius:var(--r-lg);padding:12px 14px 12px 18px;margin:14px 0 0;font-size:14.5px;color:var(--ink-2)}
-.note svg{width:22px;height:22px;color:var(--c1);margin-top:2px}
-.note b{color:var(--ink)}
-
-/* mixed */
-.mix-set{display:grid;grid-template-columns:auto 1fr;gap:12px 20px;align-items:center}
-.mix-set .lab{font-size:14px;font-weight:600;color:var(--ink-2)}
-.seg{display:inline-flex;flex-wrap:wrap;gap:6px}
-.tog{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(28,36,84,.12);background:rgba(255,255,255,.55);border-radius:12px;padding:7px 14px;font-weight:500;font-size:14.5px;color:var(--ink-2);transition:all .25s var(--ease)}
-.tog .sw{width:9px;height:9px;border-radius:50%;background:var(--lc,var(--ink));opacity:.35}
-.tog[aria-pressed="true"]{background:rgba(255,255,255,.95);color:var(--ink);border-color:color-mix(in srgb,var(--lc,var(--ink)) 40%,transparent);box-shadow:0 1px 0 #fff inset,0 6px 14px -8px rgba(24,32,88,.3)}
-.tog[aria-pressed="true"] .sw{opacity:1}
-.stage .split-note{text-align:center}.stage .prism{justify-content:center}
-.stage .miss .prism{justify-content:flex-start}.stage .miss .split-note{text-align:left}
-.stage{margin:16px 0 0;border-radius:var(--r-xl);padding:22px 26px 24px}
-.timer{height:6px;background:rgba(28,36,84,.08);border-radius:6px;overflow:hidden}
-.timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--c1),var(--c3),var(--c2));transform-origin:left;transition:transform .25s linear}
-.score{display:flex;gap:28px;justify-content:center;font-size:13px;color:var(--mute);margin-top:14px}
-.score div{display:flex;flex-direction:column;align-items:center;line-height:1.2}
-.score b{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:22px;font-weight:700;color:var(--ink)}
-.tagline{text-align:center;color:var(--mute);font-size:14.5px;min-height:24px;margin-top:12px}
-.tagline .okc{color:var(--ok);font-weight:600}.tagline .badc{color:var(--bad);font-weight:600}
-.summary{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
-.big-n{font-family:var(--num);font-variant-numeric:tabular-nums;font-size:72px;font-weight:300;letter-spacing:-2.5px;line-height:1}
-.big-n small{font-size:28px;color:var(--mute);font-weight:400;letter-spacing:0}
-.miss{border-top:1px solid var(--hair);padding:16px 0 4px}
-.miss .mq{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;font-size:21px}
-.miss .mq span{font-size:14px;color:var(--bad);font-weight:600;font-family:var(--ui)}
-.link{border:0;background:none;padding:0;color:var(--c1);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
-.weak{display:flex;flex-direction:column;gap:6px;font-size:14.5px}
-.sub{font-size:15px;font-weight:600;color:var(--ink-2);margin:0 0 8px}
-
-/* auth + sync */
-.authbox{display:flex;align-items:center;gap:8px}
-.authbox .who{font-size:13.5px;color:var(--ink-2);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dot-sync{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(20,128,60,.15)}
-.dot-sync.syncing{background:#a35d00;box-shadow:0 0 0 3px rgba(163,93,0,.18)}
-.dot-sync.error{background:var(--bad);box-shadow:0 0 0 3px rgba(207,45,45,.16)}
-.scrim{position:fixed;inset:0;z-index:50;background:rgba(20,24,51,.26);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;opacity:0;animation:fadein .25s var(--ease) forwards}
-.dlg{width:min(410px,100%);border-radius:var(--r-xl);padding:24px 24px 22px;background:rgba(255,255,255,.86)}
-.dlg-t{margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-.3px}
-.dlg-s{margin:0 0 14px;font-size:14px;color:var(--mute)}
-.dlg .lab{display:block;font-size:13.5px;font-weight:600;color:var(--ink-2);margin:12px 0 5px}
-.inp{width:100%;font-family:var(--ui);font-size:16px;padding:10px 14px;border-radius:12px;border:1px solid rgba(28,36,84,.14);background:rgba(255,255,255,.92);color:var(--ink);outline:none;box-shadow:inset 0 2px 6px rgba(24,32,88,.06);transition:border-color .2s,box-shadow .2s}
-.inp:focus{border-color:var(--c1);box-shadow:inset 0 2px 6px rgba(24,32,88,.06),0 0 0 4px rgba(47,91,234,.14)}
-.dlg .fb{margin:12px 0 12px;font-size:14px;font-weight:500;line-height:1.5}
-.dlg .fb.info{color:var(--ink-2)}
-.dlg .kv{display:flex;align-items:center;gap:8px;font-size:15px;margin:6px 0 2px}
-.dlg .fine{font-size:13px;color:var(--mute);margin:12px 0 4px}
-#recBox .note{margin:12px 0 0}
-@media (max-width:1180px){.panes{grid-template-columns:1fr}}
-@media (max-width:820px){
-  .top{position:relative;flex-wrap:wrap;gap:10px 16px;margin:8px 8px 0;top:0}
-  .gstats{margin-left:0;width:100%;justify-content:space-between}
-  .gstats div{align-items:flex-start}
-  .wrap{grid-template-columns:1fr;padding:10px 8px}
-  .rail{position:static;max-height:none;display:flex;overflow-x:auto;gap:6px;padding:8px}
-  .grp{display:none}
-  .tbtn{flex:none;width:auto;background:rgba(255,255,255,.4)}
-  .tbtn .nm small,.beads{display:none}
-  .head{padding:14px 10px 2px}
-  h1{font-size:26px}
-  .q{font-size:36px}.q.huge{font-size:46px}
-  .pane{padding:16px}
-  .summary{grid-template-columns:1fr}
-}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
-</style>
+<link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-<div class="field" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="b5"></i></div>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20v-4h-4"/></symbol>
-  <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m13 6 6 6-6 6"/></symbol>
-  <symbol id="i-all" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".6"/><circle cx="4" cy="12" r=".6"/><circle cx="4" cy="18" r=".6"/></symbol>
-  <symbol id="i-hint" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3Z"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-  <symbol id="i-pass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16.2 9.6"/></symbol>
-  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></symbol>
-  <symbol id="i-free" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></symbol>
-  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5.5v13l11-6.5-11-6.5Z"/></symbol>
-  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
-  <symbol id="i-prism" viewBox="0 0 24 24"><path d="M12 3 21 19H3L12 3Z"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
-</svg>
-
-<header class="top glass">
-  <div class="brand">
-    <svg viewBox="0 0 60 52" aria-hidden="true"><path d="M2 30 L19 27" stroke="#9aa1bf" stroke-width="2.4" stroke-linecap="round"/><path d="M26 6 L42 40 L10 40 Z" fill="rgba(255,255,255,.7)" stroke="#141833" stroke-width="2.2" stroke-linejoin="round"/><path d="M34 26 L58 16" stroke="#2f5bea" stroke-width="2.4" stroke-linecap="round"/><path d="M35 28 L58 28" stroke="#b0247f" stroke-width="2.4" stroke-linecap="round"/><path d="M34 30 L58 40" stroke="#c4510f" stroke-width="2.4" stroke-linecap="round"/></svg>
-    Mental Math Lab
-  </div>
-  <nav class="tabs" aria-label="มุมมอง">
-    <button id="tabLearn" class="on">เรียนทีละเทคนิค</button>
-    <button id="tabMix">ทดสอบรวม</button>
-  </nav>
-  <div class="gstats">
-    <div>ทำถูก<b id="gCorrect">0</b></div>
-    <div>ความแม่น<b id="gAcc">–</b></div>
-    <div>เทคนิคที่ผ่าน<b id="gMaster">0/18</b></div>
-  </div>
-  <div class="authbox" id="authBox"></div>
-</header>
-<div class="wrap">
-  <aside class="rail glass" id="side" aria-label="เทคนิค"></aside>
-  <main id="main"></main>
-</div>
-
+<main class="dojo" id="main"></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/core.js"></script>
+<script src="js/store.js"></script>
+<script src="js/shell.js"></script>
 <script>
-/* ---------- helpers ---------- */
-const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-const pick=a=>a[r(0,a.length-1)];
-const f=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:4});
-const p2=n=>String(n).padStart(2,'0');
-const C=(n,c)=>`<i class="c${c}">${typeof n==='number'?f(n):n}</i>`;
-const B=n=>`<b>${f(n)}</b>`;
-const I=(id,cls='i')=>`<svg class="${cls}"><use href="#i-${id}"/></svg>`;
-const LV=[
-  {en:'Basic',th:'พื้นฐาน',col:'var(--l0)',soft:'#9fe3d1'},
-  {en:'Intermediate',th:'ระดับกลาง',col:'var(--l1)',soft:'#ffd28a'},
-  {en:'Advanced',th:'ขั้นสูง',col:'var(--l2)',soft:'#c7b4ff'}
-];
-const MASTER=5;
-/* split part helpers: [text,color] or plain operator string */
-const P=(v,c)=>[typeof v==='number'?f(v):v,c];
+let heatMode='vol';
+const WEEKS=52;
 
-/* ---------- techniques ---------- */
-const T=[
-/* ===== BASIC ===== */
-{id:'add-split',lv:0,en:'Break & Add',th:'แยกหลักแล้วบวก',
- idea:'แยกตัวที่สองเป็น “หลักสิบ” กับ “หลักหน่วย” แล้วบวกทีละก้อนจากซ้ายไปขวา แต่ละขั้นสมองจำแค่ตัวเลขเดียว',
- use:'บวกเลข 2 หลักทั่วไป เช่น ทอนเงิน รวมราคา',
- gen(){let a=r(24,89),b=r(15,79);if(b%10===0)b+=r(1,9);const t=b-b%10,o=b%10;
-  return{q:`${a} + ${b}`,ans:a+b,split:{src:f(b),note:'แยกเป็นหลักสิบกับหลักหน่วย',parts:[P(t,1),'+',P(o,2)]},
-  steps:[`แยก ${b} = ${C(t,1)} + ${C(o,2)}`,`<span class="m">${a} + ${C(t,1)} = ${f(a+t)}</span>`,`<span class="m">${f(a+t)} + ${C(o,2)} =</span> ${B(a+b)}`],
-  viz:{type:'line',start:a,jumps:[t,o]}}}},
-{id:'round-add',lv:0,en:'Round & Compensate (+)',th:'ปัดเป็นเลขกลมแล้วชดเชย',
- idea:'ถ้าตัวบวกใกล้เลขกลม (เช่น 298 ใกล้ 300) ให้บวกเลขกลมไปก่อน แล้วค่อยลบส่วนที่บวกเกินออก',
- use:'ตัวเลขลงท้ายด้วย 7, 8, 9 หรือ 98, 99',
- gen(){let a,b,R,d;if(Math.random()<.5){R=r(2,9)*100;d=r(1,4);b=R-d;a=r(123,689)}else{R=r(3,9)*10;d=r(1,3);b=R-d;a=r(26,88)}
-  return{q:`${a} + ${b}`,ans:a+b,split:{src:f(b),note:'มองเป็นเลขกลมลบส่วนที่ขาด',parts:[P(R,1),'−',P(d,2)]},
-  steps:[`${b} ใกล้ ${C(R,1)} (ขาดไป ${C(d,2)})`,`<span class="m">${a} + ${C(R,1)} = ${f(a+R)}</span>`,`บวกเกินไป ${C(d,2)} → <span class="m">${f(a+R)} − ${d} =</span> ${B(a+b)}`],
-  viz:{type:'line',start:a,jumps:[R,-d]}}}},
-{id:'count-up',lv:0,en:'Count Up to Subtract',th:'ลบด้วยการนับขึ้น (แบบทอนเงิน)',
- idea:'แทนที่จะลบ ให้นับจากตัวน้อยขึ้นไปหาตัวมาก โดยกระโดดไปเลขกลมทีละช่วง ผลรวมของระยะกระโดดคือคำตอบ',
- use:'การลบที่ต้องยืมหลายหลัก เช่น 603 − 278',
- gen(){const big=r(312,960),small=r(108,big-60);let p=small;const J=[];
-  let t=Math.ceil(p/10)*10;if(t>p&&t<=big){J.push(t-p);p=t}
-  t=Math.ceil(p/100)*100;if(t>p&&t<=big){J.push(t-p);p=t}
-  if(big-p>=100){const h=Math.floor((big-p)/100)*100;J.push(h);p+=h}
-  if(big>p)J.push(big-p);
-  let q=small;const steps=J.map((j,i)=>{const s=`<span class="m">${f(q)} → ${f(q+j)}</span> กระโดด ${C(j,(i%3)+1)}`;q+=j;return s});
-  steps.push(`รวมระยะกระโดด <span class="m">${J.join(' + ')} =</span> ${B(big-small)}`);
-  const parts=[];J.forEach((j,i)=>{if(i)parts.push('+');parts.push(P(j,(i%3)+1))});
-  return{q:`${big} − ${small}`,ans:big-small,split:{src:`${f(small)} → ${f(big)}`,note:'ระยะห่างแยกเป็นช่วงกระโดดไปเลขกลม',parts},steps,viz:{type:'line',start:small,jumps:J}}}},
-{id:'round-sub',lv:0,en:'Round & Compensate (−)',th:'ลบเลขกลมแล้วบวกคืน',
- idea:'ถ้าตัวลบใกล้เลขกลม ให้ลบเลขกลมไปก่อน เท่ากับลบเกินไป จึงต้องบวกส่วนเกินคืน',
- use:'ลบเลขที่ลงท้ายด้วย 7, 8, 9',
- gen(){let b,R;if(Math.random()<.55){R=r(2,9)*10;b=R-r(1,3)}else{R=r(2,7)*100;b=R-r(1,4)}let a=r(b+25,b+600);
-  return{q:`${a} − ${b}`,ans:a-b,split:{src:f(b),note:'มองเป็นเลขกลมลบส่วนที่ขาด',parts:[P(R,1),'−',P(R-b,2)]},
-  steps:[`${b} ใกล้ ${C(R,1)}`,`<span class="m">${f(a)} − ${C(R,1)} = ${f(a-R)}</span>`,`ลบเกินไป ${C(R-b,2)} → บวกคืน <span class="m">${f(a-R)} + ${R-b} =</span> ${B(a-b)}`],
-  viz:{type:'line',start:a,jumps:[-R,R-b]}}}},
-{id:'times5',lv:0,en:'Multiply by 5',th:'คูณ 5 = คูณ 10 แล้วหาร 2',
- idea:'5 คือครึ่งหนึ่งของ 10 ดังนั้นเติม 0 ต่อท้าย แล้วแบ่งครึ่ง',
- use:'คูณ 5, 50, 500 (หลักการเดียวกัน)',
- gen(){const n=r(14,198);return{q:`${n} × 5`,ans:n*5,split:{src:'× 5',note:'คูณ 5 แยกเป็นสองขั้นที่ง่ายกว่า',parts:[P('× 10',1),P('÷ 2',2)]},
-  steps:[`× 5 = ${C('× 10',1)} แล้ว ${C('÷ 2',2)}`,`<span class="m">${n} × 10 = ${f(n*10)}</span>`,`<span class="m">${f(n*10)} ÷ 2 =</span> ${B(n*5)}`]}}},
-{id:'double-halve',lv:0,en:'Double & Halve',th:'ครึ่งหนึ่ง–สองเท่า',
- idea:'ลดตัวหนึ่งลงครึ่ง แล้วเพิ่มอีกตัวเป็นสองเท่า ผลคูณไม่เปลี่ยน ทำซ้ำจนเจอเลขกลมที่คูณง่าย',
- use:'มี 15, 25, 35, 45 คูณกับเลขคู่',
- gen(){const b0=pick([15,25,35,45]);let a0=2*r(4,24);if(b0===25&&Math.random()<.6)a0=4*r(3,12);
-  let a=a0,b=b0;const steps=[`<span class="m">${a} × ${b}</span>`];
-  while(a%2===0&&(b%10!==0||b===50)){a/=2;b*=2;steps.push(`${C(a,1)} (ครึ่งหนึ่ง) × ${C(b,2)} (สองเท่า)`)}
-  steps.push(`<span class="m">${a} × ${b} =</span> ${B(a0*b0)}`);
-  return{q:`${a0} × ${b0}`,ans:a0*b0,split:{src:`${a0} × ${b0}`,note:'แปลงเป็นคู่ที่คูณง่ายกว่า ผลคูณเท่าเดิม',parts:[P(a,1),'×',P(b,2)]},steps}}},
+function heatLevel(d){if(!d||!d.a)return 0;
+  if(heatMode==='vol')return d.a<10?1:d.a<25?2:d.a<50?3:4;
+  const p=100*d.c/d.a;return p<60?1:p<75?2:p<90?3:4}
+const pct=d=>d&&d.a?Math.round(100*d.c/d.a):null;
 
-/* ===== INTERMEDIATE ===== */
-{id:'times11',lv:1,en:'Multiply by 11',th:'คูณ 11 แบบแทรกตรงกลาง',
- idea:'เลข 2 หลักคูณ 11: แยกสองหลักออกจากกัน แล้วเอาผลบวกของมันไปแทรกตรงกลาง ถ้าผลบวกเกิน 9 ให้ทด 1 ไปหลักหน้า',
- use:'คูณ 11 ทุกครั้ง',
- gen(){const n=r(12,98),a=Math.floor(n/10),b=n%10,s=a+b;
-  return{q:Math.random()<.5?`${n} × 11`:`11 × ${n}`,ans:n*11,split:{src:f(n),note:'แยกสองหลัก แล้วแทรกผลบวกไว้ตรงกลาง',parts:[P(a,1),P(`${a}+${b}`,3),P(b,2)]},
-  steps:[`แยก ${n} → ${C(a,1)} _ ${C(b,2)}`,`ตรงกลาง = <span class="m">${a} + ${b} = ${C(s,3)}</span>`,
-  s<10?`วาง ${C(a,1)}${C(s,3)}${C(b,2)} → ${B(n*11)}`:`${s} มี 2 หลัก → ทด 1 ไปหลักหน้า: <span class="m">${a}+1 | ${s-10} | ${b}</span> → ${B(n*11)}`]}}},
-{id:'square5',lv:1,en:'Square Numbers Ending in 5',th:'ยกกำลังสองเลขลงท้าย 5',
- idea:'เอาหลักหน้าคูณกับ “ตัวมันบวก 1” แล้วต่อท้ายด้วย 25 เสมอ',
- use:'15², 35², 85², 115²',
- gen(){const t=r(1,12),n=t*10+5;return{q:`${n}²`,ans:n*n,split:{src:`${n}²`,note:'คำตอบแบ่งเป็นสองท่อน ซ้ายกับขวา',parts:[P(`${t}×${t+1}`,1),'|',P('25',2)]},
-  steps:[`หลักหน้า = ${C(t,1)}`,`<span class="m">${t} × ${t+1} = ${C(t*(t+1),1)}</span>`,`ต่อท้ายด้วย ${C('25',2)} → ${B(n*n)}`]}}},
-{id:'split-mult',lv:1,en:'Split & Multiply',th:'แยกคูณ (Distributive)',
- idea:'แยกเลข 2 หลักเป็นหลักสิบกับหลักหน่วย คูณทีละส่วนแล้วนำมารวมกัน',
- use:'เลข 2 หลัก × เลขหลักเดียว',
- gen(){let a=r(13,89);if(a%10===0)a++;const b=r(3,9),t=a-a%10,o=a%10;
-  return{q:`${a} × ${b}`,ans:a*b,split:{src:f(a),note:'แยกเป็นหลักสิบกับหลักหน่วย แล้วคูณทีละส่วน',parts:[P(t,1),'+',P(o,2)]},
-  steps:[`แยก ${a} = ${C(t,1)} + ${C(o,2)}`,`<span class="m">${C(t,1)} × ${b} = ${f(t*b)}</span>`,`<span class="m">${C(o,2)} × ${b} = ${f(o*b)}</span>`,`<span class="m">${f(t*b)} + ${f(o*b)} =</span> ${B(a*b)}`],
-  viz:{type:'area',cols:[t,o],rows:[b]}}}},
-{id:'ltr-mult',lv:1,en:'Left-to-Right Multiply',th:'คูณจากซ้ายไปขวา',
- idea:'คูณหลักร้อยก่อน แล้วสะสมผลไปเรื่อย ๆ ทีละหลัก คนส่วนใหญ่ถนัดแบบนี้มากกว่าการคูณจากขวาแบบในกระดาษ',
- use:'เลข 3 หลัก × เลขหลักเดียว',
- gen(){const a=r(123,987),b=r(3,9),H=a-a%100,Tn=a%100-a%10,O=a%10;const parts=[H,Tn,O].filter(x=>x>0);
-  let acc=0;const steps=parts.map((p,i)=>{acc+=p*b;return i===0?`<span class="m">${C(p,i+1)} × ${b} = ${f(p*b)}</span>`:`<span class="m">+ ${C(p,i+1)} × ${b} = ${f(p*b)} → สะสม ${f(acc)}</span>`});
-  steps.push(`คำตอบ ${B(a*b)}`);
-  const sp=[];parts.forEach((p,i)=>{if(i)sp.push('+');sp.push(P(p,i+1))});
-  return{q:`${a} × ${b}`,ans:a*b,split:{src:f(a),note:'แยกตามหลัก ร้อย สิบ หน่วย',parts:sp},steps,viz:{type:'area',cols:parts,rows:[b]}}}},
-{id:'div5',lv:1,en:'Divide by 5',th:'หาร 5 = คูณ 2 แล้วหาร 10',
- idea:'หาร 5 ก็คือคูณ 2 แล้วเลื่อนจุดทศนิยมไปทางซ้าย 1 ตำแหน่ง',
- use:'หาร 5, 50 และคิดเปอร์เซ็นต์เร็ว ๆ',
- gen(){const n=r(23,480),ans=n*2/10;return{q:`${n} ÷ 5`,ans,split:{src:'÷ 5',note:'หาร 5 แยกเป็นสองขั้นที่ง่ายกว่า',parts:[P('× 2',1),P('÷ 10',2)]},
-  steps:[`÷ 5 = ${C('× 2',1)} แล้ว ${C('÷ 10',2)}`,`<span class="m">${n} × 2 = ${f(n*2)}</span>`,`<span class="m">${f(n*2)} ÷ 10 =</span> ${B(ans)}`]}}},
-{id:'percent',lv:1,en:'Percent Building Blocks',th:'เปอร์เซ็นต์จากบล็อก 10% และ 5%',
- idea:'10% คือเลื่อนจุดทศนิยม 1 ตำแหน่ง ส่วน 5% คือครึ่งหนึ่งของ 10% เอาสองบล็อกนี้มาประกอบเป็นเปอร์เซ็นต์อื่น',
- use:'ส่วนลด ทิป VAT',
- gen(){const p=pick([5,15,20,25,30,35,45,60,75]),base=20*r(2,30),ten=base/10,five=base/20,ans=base*p/100;let steps,parts;
-  if(p===25){steps=[`25% = ${C('¼',1)}`,`<span class="m">${base} ÷ 4 =</span> ${B(ans)}`];parts=[P('¼',1)]}
-  else if(p===75){steps=[`75% = ${C('¼',1)} × ${C('3',2)}`,`<span class="m">${base} ÷ 4 = ${f(base/4)}</span>`,`<span class="m">${f(base/4)} × 3 =</span> ${B(ans)}`];parts=[P('¼',1),'×',P('3',2)]}
-  else{const k=Math.floor(p/10),h=p%10===5;steps=[`10% ของ ${base} = ${C(ten,1)}`];parts=[];
-   if(k)parts.push(P(`${k} × 10%`,1));if(k&&h)parts.push('+');if(h)parts.push(P('5%',2));
-   if(h)steps.push(`5% = ครึ่งของ 10% = ${C(five,2)}`);
-   if(k===0)steps.push(`คำตอบ ${B(ans)}`);
-   else steps.push(`${p}% = ${k} × 10%${h?' + 5%':''} → <span class="m">${k} × ${f(ten)}${h?' + '+f(five):''} =</span> ${B(ans)}`)}
-  return{q:`${p}% ของ ${base}`,ans,split:{src:`${p}%`,note:'ประกอบจากบล็อกที่คิดง่าย',parts},steps}}},
+function heatHTML(){
+  const now=new Date(),dow=(now.getDay()+6)%7,start=addDays(now,-(dow+7*(WEEKS-1)));
+  let months='',cells='',prevM=-1;
+  for(let w=0;w<WEEKS;w++){
+    const m=addDays(start,w*7).getMonth();months+=`<span>${m!==prevM?TH_M[m]:''}</span>`;prevM=m;
+    for(let r=0;r<7;r++){const d=addDays(start,w*7+r),k=dayKey(d);
+      if(d>now){cells+='<i class="cell" style="visibility:hidden"></i>';continue}
+      const x=D.days[k],lv=heatLevel(x),p=pct(x);
+      cells+=`<button class="cell l${lv}${k===dayKey(now)?' now':''}" data-k="${k}" aria-label="${thDate(k)}: ${x&&x.a?`${x.a} ข้อ ถูก ${p}%`:'ไม่ได้เล่น'}"></button>`}}
+  const dl='<span>จ</span><span></span><span>พ</span><span></span><span>ศ</span><span></span><span>อา</span>';
+  return `<div class="heat-wrap" id="heatWrap"><div class="heat-m">${months}</div><div class="heat-row"><div class="heat-d" aria-hidden="true">${dl}</div><div class="heat" id="heat">${cells}</div></div></div>
+   <p class="heat-read" id="heatRead" aria-live="polite"></p>
+   <div class="legend" aria-hidden="true"><span>${heatMode==='vol'?'เล่นน้อย':'แม่นน้อย'}</span>${[0,1,2,3,4].map(l=>`<i class="cell l${l}"></i>`).join('')}<span>${heatMode==='vol'?'เล่นมาก':'แม่นมาก'}</span></div>`}
 
-/* ===== ADVANCED ===== */
-{id:'near100',lv:2,en:'Near 100 (below)',th:'คูณเลขใกล้ 100 (ต่ำกว่า)',
- idea:'ดูว่าแต่ละตัวขาดจาก 100 เท่าไร ซ้าย = ตัวหนึ่งลบส่วนที่อีกตัวขาด, ขวา = ส่วนที่ขาดคูณกัน (เขียนเป็น 2 หลัก)',
- use:'เลข 85–99 คูณกัน',
- gen(){const a=r(86,99),b=r(85,99),da=100-a,db=100-b,L=a-db,R=da*db;
-  const s=[`ขาดจาก 100: ${a} → ${C(da,1)}, ${b} → ${C(db,2)}`,`ซ้าย: <span class="m">${a} − ${C(db,2)} = ${f(L)}</span> (หรือ ${b} − ${da} ก็ได้เท่ากัน)`,`ขวา: <span class="m">${C(da,1)} × ${C(db,2)} = ${R<100?p2(R):R}</span>`];
-  if(R>=100)s.push(`ขวาเกิน 2 หลัก → ทด ${Math.floor(R/100)} ไปทางซ้าย`);
-  s.push(`คำตอบ ${B(a*b)}`);return{q:`${a} × ${b}`,ans:a*b,split:{src:`${a} × ${b}`,note:'มองแต่ละตัวเป็น 100 ลบส่วนที่ขาด',parts:[P(`100−${da}`,1),'×',P(`100−${db}`,2)]},steps:s}}},
-{id:'near100up',lv:2,en:'Near 100 (above)',th:'คูณเลขใกล้ 100 (เกิน 100)',
- idea:'กลับด้านจากแบบต่ำกว่า: ซ้าย = ตัวหนึ่งบวกส่วนเกินของอีกตัว, ขวา = ส่วนเกินคูณกัน (2 หลัก)',
- use:'101–115 คูณกัน',
- gen(){const a=r(101,113),b=r(101,113),da=a-100,db=b-100,L=a+db,R=da*db;
-  const s=[`เกิน 100: ${a} → ${C(da,1)}, ${b} → ${C(db,2)}`,`ซ้าย: <span class="m">${a} + ${C(db,2)} = ${L}</span>`,`ขวา: <span class="m">${C(da,1)} × ${C(db,2)} = ${R<100?p2(R):R}</span>`];
-  if(R>=100)s.push(`ขวาเกิน 2 หลัก → ทด ${Math.floor(R/100)} ไปทางซ้าย`);
-  s.push(`คำตอบ ${B(a*b)}`);return{q:`${a} × ${b}`,ans:a*b,split:{src:`${a} × ${b}`,note:'มองแต่ละตัวเป็น 100 บวกส่วนเกิน',parts:[P(`100+${da}`,1),'×',P(`100+${db}`,2)]},steps:s}}},
-{id:'square-any',lv:2,en:'Square Any 2-Digit',th:'ยกกำลังสองเลข 2 หลักใดก็ได้',
- idea:'n² = (n+d)(n−d) + d² เลือก d ให้ตัวหนึ่งกลายเป็นเลขกลม ทำให้คูณง่ายขึ้นมาก',
- use:'ยกกำลังสอง เช่น 47², 83²',
- gen(){let n=r(21,99);if(n%10===0)n++;const u=n%10,d=u<=5?u:10-u,up=n+d,dn=n-d;
-  return{q:`${n}²`,ans:n*n,split:{src:`${n}²`,note:'ขยับขึ้นลงเท่ากันจนเจอเลขกลม แล้วชดเชยด้วย d²',parts:[P(up,1),'×',P(dn,2),'+',P(`${d}²`,3)]},
-  steps:[`${n} ห่างจากเลขกลม ${C(d,3)}`,`<span class="m">${n}² = (${n}+${d})(${n}−${d}) + ${d}²</span>`,`<span class="m">${C(up,1)} × ${C(dn,2)} = ${f(up*dn)}</span>`,`<span class="m">${f(up*dn)} + ${C(d*d,3)} =</span> ${B(n*n)}`]}}},
-{id:'diff-sq',lv:2,en:'Difference of Squares',th:'ผลต่างกำลังสอง',
- idea:'ถ้าสองตัวห่างจากเลขกลมตัวเดียวกันเท่ากัน (เช่น 47 กับ 53 ห่างจาก 50 คนละ 3) ผลคูณ = กลาง² − ระยะ²',
- use:'สองตัวที่มีเลขกลมอยู่ตรงกลางพอดี',
- gen(){const m=r(2,9)*10,d=r(1,7),a=m-d,b=m+d;const[x,y]=Math.random()<.5?[a,b]:[b,a];
-  return{q:`${x} × ${y}`,ans:a*b,split:{src:`${x} × ${y}`,note:'เลขกลมตรงกลางยกกำลังสอง ลบระยะยกกำลังสอง',parts:[P(`${m}²`,1),'−',P(`${d}²`,2)]},
-  steps:[`${a} กับ ${b} ห่างจาก ${C(m,1)} คนละ ${C(d,2)}`,`<span class="m">(${m}−${d})(${m}+${d}) = ${m}² − ${d}²</span>`,`<span class="m">${f(m*m)} − ${d*d} =</span> ${B(a*b)}`]}}},
-{id:'same-tens',lv:2,en:'Same Tens, Units Sum to 10',th:'หลักสิบเท่ากัน หลักหน่วยรวมได้ 10',
- idea:'เช่น 43 × 47: หลักสิบเท่ากัน (4) และหน่วยรวมได้ 10 (3+7) → ซ้าย = 4 × 5, ขวา = 3 × 7 (เขียน 2 หลัก)',
- use:'เป็นกรณีทั่วไปของเทคนิคเลขลงท้าย 5',
- gen(){const t=r(1,9),u=r(1,9),a=10*t+u,b=10*t+10-u,L=t*(t+1),R=u*(10-u);
-  return{q:`${a} × ${b}`,ans:a*b,split:{src:`${a} × ${b}`,note:'คำตอบแบ่งเป็นสองท่อน ซ้ายกับขวา',parts:[P(`${t}×${t+1}`,1),'|',P(`${u}×${10-u}`,2)]},
-  steps:[`หลักสิบเท่ากัน = ${C(t,1)}, หน่วย ${u} + ${10-u} = 10`,`ซ้าย: <span class="m">${t} × ${t+1} = ${C(L,1)}</span>`,`ขวา: <span class="m">${u} × ${10-u} = ${C(p2(R),2)}</span>`,`ต่อกัน → ${B(a*b)}`]}}},
-{id:'cross',lv:2,en:'Vertically & Crosswise',th:'คูณไขว้ (2 หลัก × 2 หลัก)',
- idea:'เทคนิคจากเวทคณิต: ขวา = หน่วย×หน่วย, กลาง = ผลคูณไขว้บวกกัน, ซ้าย = สิบ×สิบ แล้วทดจากขวาไปซ้าย ภาพกล่องด้านล่างคือ 4 ก้อนเดียวกัน',
- use:'เลข 2 หลักคูณกันทั่วไป',
- gen(){const a=r(12,98),b=r(12,98),a1=Math.floor(a/10),a0=a%10,b1=Math.floor(b/10),b0=b%10;
-  const R=a0*b0,M=a1*b0+a0*b1,L=a1*b1,c1=Math.floor(R/10),m2=M+c1,c2=Math.floor(m2/10),l2=L+c2;
-  return{q:`${a} × ${b}`,ans:a*b,split:{src:`${a} × ${b}`,note:'สามคอลัมน์ ซ้าย กลาง ขวา แล้วทดจากขวา',parts:[P(`${a1}×${b1}`,1),'|',P(`${a1}×${b0}+${a0}×${b1}`,3),'|',P(`${a0}×${b0}`,2)]},
-  steps:[
-   `ขวา: <span class="m">${C(`${a0}×${b0}`,2)} = ${R}</span> → เขียน ${R%10}${c1?`, ทด ${c1}`:''}`,
-   `กลาง: <span class="m">${C(`${a1}×${b0} + ${a0}×${b1}`,3)} = ${M}${c1?` + ทด ${c1} = ${m2}`:''}</span> → เขียน ${m2%10}${c2?`, ทด ${c2}`:''}`,
-   `ซ้าย: <span class="m">${C(`${a1}×${b1}`,1)} = ${L}${c2?` + ทด ${c2} = ${l2}`:''}</span>`,
-   `อ่านจากซ้ายไปขวา → ${B(a*b)}`],
-  viz:{type:'area',cols:[a1*10,a0].filter(x=>x),rows:[b1*10,b0].filter(x=>x)}}}}
-];
-const byId=Object.fromEntries(T.map(t=>[t.id,t]));
+function readDay(k){
+  const x=D.days[k];
+  heatRead.innerHTML=x&&x.a?`<b>${thDate(k)}</b> · เล่น <b>${x.a}</b> ข้อ · ถูก <b>${pct(x)}%</b>`:`<b>${thDate(k)}</b> · ไม่ได้เล่น`}
 
-/* ---------- storage ---------- */
-const KEY='mm-lab-v1';let S={};
-try{S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){S={}}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-const st=id=>S[id]||(S[id]={c:0,w:0,s:0,b:0});
-function record(id,ok){const s=st(id);if(ok){s.c++;s.s++;s.b=Math.max(s.b,s.s)}else{s.w++;s.s=0}save();renderStats();renderSide();pushOne(id);renderRec()}
-const mastered=id=>st(id).b>=MASTER;
-function renderStats(){let c=0,w=0,m=0;T.forEach(t=>{const s=st(t.id);c+=s.c;w+=s.w;if(mastered(t.id))m++});
-  gCorrect.textContent=c;gAcc.textContent=c+w?Math.round(100*c/(c+w))+'%':'–';gMaster.textContent=`${m}/${T.length}`}
+function trendHTML(){
+  const pts=[];for(let i=7;i>=0;i--){const w=winAcc(i*7+6,i*7);pts.push(w.a>=10?w.pct:null)}
+  const have=pts.filter(v=>v!==null);
+  if(have.length<2)return `<div class="trend"><p>เส้นพัฒนาการรายสัปดาห์จะขึ้นเมื่อมีอย่างน้อย 2 สัปดาห์ที่ทำครบ 10 ข้อขึ้นไป</p></div>`;
+  const lo=Math.max(0,Math.min(...have)-8),hi=Math.min(100,Math.max(...have)+8),W=Math.max(300,Math.min(760,document.documentElement.clientWidth-130)),H=84,pad=10;
+  const X=i=>pad+i*(W-2*pad)/7,Y=v=>H-pad-(v-lo)/(hi-lo||1)*(H-2*pad);
+  let path='',dots='';pts.forEach((v,i)=>{if(v===null)return;path+=(path?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);dots+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4" fill="#fff" stroke="#0b7f6a" stroke-width="2"/>`});
+  const last=have[have.length-1],first=have[0];
+  return `<div class="trend"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ความแม่นรายสัปดาห์ 8 สัปดาห์ล่าสุด: ${have.join('%, ')}%"><path d="${path}" fill="none" stroke="#0b7f6a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${dots}</svg>
+   <p>ความแม่นรายสัปดาห์ (เฉพาะสัปดาห์ที่ทำ ≥10 ข้อ) จาก ${first}% เป็น ${last}%</p></div>`}
 
-/* ---------- the prism split ---------- */
-const PC={1:'var(--c1)',2:'var(--c2)',3:'var(--c3)'};
-const HEX={1:'#2f5bea',2:'#c4510f',3:'#b0247f'};
-function prismHTML(sp,anim=true){
-  const cs=[...new Set(sp.parts.filter(p=>Array.isArray(p)).map(p=>p[1]))];
-  const ys=cs.length===1?[44]:cs.length===2?[30,60]:[22,44,68];const xs=cs.length===1?[83]:cs.length===2?[81,86]:[80,83,87];const y0=cs.length===1?[44]:cs.length===2?[40,50]:[38,45,52];
-  const rays=cs.map((c,i)=>`<path class="ray" pathLength="1" d="M${xs[i]} ${y0[i]} L150 ${ys[i]}" stroke="${HEX[c]}" stroke-width="2.6" style="animation-delay:${.35+i*.08}s"/>`).join('');
-  let k=0;const parts=sp.parts.map(p=>{const d=(.45+k++*.09).toFixed(2);return Array.isArray(p)?`<span class="chip" style="--pc:${PC[p[1]]};animation-delay:${d}s">${p[0]}</span>`:`<span class="op" style="animation-delay:${d}s">${p}</span>`}).join('');
-  return `<p class="split-note">${sp.note}</p><div class="prism ${anim?'go':''}"><span class="src">${sp.src}</span>
-   <svg class="pr" viewBox="0 0 150 84" aria-hidden="true">
-   <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".55" stop-color="#e6ecff" stop-opacity=".7"/><stop offset="1" stop-color="#cfd8f5" stop-opacity=".85"/></linearGradient>
-   <linearGradient id="pf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2f5bea" stop-opacity="0"/><stop offset=".4" stop-color="#2f5bea" stop-opacity=".22"/><stop offset=".7" stop-color="#b0247f" stop-opacity=".2"/><stop offset="1" stop-color="#c4510f" stop-opacity=".22"/></linearGradient></defs>
-   <path class="ray" pathLength="1" d="M0 50 L46 46" stroke="#a6acc6" stroke-width="2.4" style="animation-delay:0s"/>
-   <g class="body"><path d="M66 8 L94 70 L38 70 Z" fill="url(#pg)" stroke="rgba(255,255,255,.95)" stroke-width="2" stroke-linejoin="round" style="filter:drop-shadow(0 6px 10px rgba(24,32,88,.22))"/>
-   <path d="M52 44 L80 42 L86 56 L50 56 Z" fill="url(#pf)"/>
-   <path d="M66 12 L42 66" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
-   <path d="M66 8 L94 70 L38 70 Z" fill="none" stroke="rgba(20,24,51,.18)" stroke-width="1" stroke-linejoin="round"/></g>${rays}</svg>
-   <span class="parts">${parts}</span></div>`}
-
-/* ---------- visuals ---------- */
-function numberLine(start,jumps,W0){
-  const pts=[start];jumps.forEach(j=>pts.push(pts[pts.length-1]+j));
-  const vals=[...new Set(pts)].sort((a,b)=>a-b);
-  const W=W0||680,pad=W<520?30:46,H=190,y=95;const w=[0];
-  for(let i=1;i<vals.length;i++)w.push(w[i-1]+Math.sqrt(vals[i]-vals[i-1])+2);
-  const tot=w[w.length-1]||1;const X=v=>pad+w[vals.indexOf(v)]/tot*(W-2*pad);
-  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="เส้นจำนวน">
-  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="context-stroke"/></marker></defs>
-  <rect x="${pad-22}" y="${y-3}" width="${W-2*pad+44}" height="6" rx="3" fill="rgba(255,255,255,.9)" stroke="rgba(20,24,51,.12)"/>`;
-  const cols=['#2f5bea','#c4510f','#b0247f'];
-  vals.forEach(v=>{const x=X(v);const isEnd=v===pts[pts.length-1];
-    s+=`<circle cx="${x}" cy="${y}" r="${isEnd||v===start?6:4}" fill="${isEnd?'#14803c':'#fff'}" stroke="${isEnd?'#14803c':'#141833'}" stroke-width="1.6"/>
-    <text x="${x}" y="${y+26}" text-anchor="middle" font-size="13.5" font-weight="${isEnd||v===start?800:500}" fill="${isEnd?'#14803c':'#141833'}">${f(v)}</text>`});
-  jumps.forEach((j,i)=>{const x1=X(pts[i]),x2=X(pts[i+1]),up=j>0,h=Math.min(62,22+Math.abs(x2-x1)*.3);
-    const cy=up?y-h*1.5:y+30+h*1.1,mid=(x1+x2)/2,col=cols[i%3],d=(i*0.7).toFixed(2);
-    const sy=up?y-8:y+34;
-    s+=`<path class="arc" pathLength="1" d="M${x1},${sy} Q${mid},${cy} ${x2},${sy}" stroke="${col}" marker-end="url(#ah)" style="animation-delay:${d}s"/>
-    <text class="fade" style="animation-delay:${(i*0.7+.35).toFixed(2)}s" x="${mid}" y="${up?y-h*.75-12:y+30+h*.55+18}" text-anchor="middle" font-size="14.5" font-weight="800" fill="${col}">${j>0?'+':'−'}${f(Math.abs(j))}</text>`});
-  return s+'</svg>'}
-function areaModel(cols,rows,W0){
-  const W=W0||600,L=56,Tp=34,mx=Math.max(...cols),my=Math.max(...rows);
-  const cw=cols.map(c=>Math.max(c,mx*.22)),rh=rows.map(v=>Math.max(v,my*.3));
-  const sw=cw.reduce((a,b)=>a+b),sh=rh.reduce((a,b)=>a+b);
-  const GW=W-L-10,GH=rows.length>1?220:92;
-  const cx=[],ry=[];let acc=L;cw.forEach(c=>{cx.push(acc);acc+=c/sw*GW});cx.push(acc);
-  acc=Tp;rh.forEach(v=>{ry.push(acc);acc+=v/sh*GH});ry.push(acc);
-  const fills=['rgba(47,91,234,.10)','rgba(196,81,15,.10)','rgba(176,36,127,.10)','rgba(20,128,60,.10)'];
-  const strokes=['rgba(47,91,234,.35)','rgba(196,81,15,.35)','rgba(176,36,127,.35)','rgba(20,128,60,.35)'];
-  let s=`<svg viewBox="0 0 ${W} ${Tp+GH+46}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="แบบจำลองพื้นที่">`;let k=0,sum=[];
-  cols.forEach((c,i)=>{s+=`<text x="${(cx[i]+cx[i+1])/2}" y="${Tp-11}" text-anchor="middle" font-size="15" font-weight="800" fill="#2f5bea">${f(c)}</text>`});
-  rows.forEach((v,j)=>{s+=`<text x="${L-12}" y="${(ry[j]+ry[j+1])/2+5}" text-anchor="end" font-size="15" font-weight="800" fill="#c4510f">${f(v)}</text>`});
-  rows.forEach((v,j)=>cols.forEach((c,i)=>{const x=cx[i],y=ry[j],w=cx[i+1]-x,h=ry[j+1]-y,dl=(k*.3).toFixed(2);sum.push(c*v);
-    s+=`<g class="fade" style="animation-delay:${dl}s"><rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" rx="10" fill="rgba(255,255,255,.75)"/><rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" rx="10" fill="${fills[k%4]}" stroke="${strokes[k%4]}"/>
-    <text x="${x+w/2}" y="${y+h/2-3}" text-anchor="middle" font-size="${w<90?11:13}" fill="#5a6082">${f(c)}×${f(v)}</text>
-    <text x="${x+w/2}" y="${y+h/2+17}" text-anchor="middle" font-size="${w<90?14:17}" font-weight="800" fill="#141833">${f(c*v)}</text></g>`;k++}));
-  s+=`<text class="fade" style="animation-delay:${(k*.3).toFixed(2)}s" x="${L}" y="${Tp+GH+32}" font-size="15" font-weight="700" fill="#141833">${sum.map(f).join(' + ')} = ${f(sum.reduce((a,b)=>a+b))}</text>`;
-  return s+'</svg>'}
-const vizHTML=(v,el)=>{if(!v)return'';const w=el&&el.clientWidth?Math.max(320,Math.min(680,el.clientWidth)):680;return v.type==='line'?numberLine(v.start,v.jumps,w):areaModel(v.cols,v.rows,Math.min(600,w))};
-
-/* ---------- rail ---------- */
-let view='learn',cur=T[0].id;
-try{const h=location.hash.slice(1);if(byId[h])cur=h;else if(h==='mix')view='mix'}catch(e){}
-function setLevelLight(lv){const l=LV[lv],d=document.documentElement.style;d.setProperty('--lvl',l.col);d.setProperty('--lvl-soft',l.soft)}
-function renderSide(){
-  const W=document.querySelector('.wrap');if(view!=='learn'){side.style.display='none';W.classList.add('solo');return}side.style.display='';W.classList.remove('solo');
-  let h='';LV.forEach((l,li)=>{h+=`<div class="grp" style="color:${l.col}">${I('prism')}<span style="color:var(--ink-2)">${l.th}</span></div>`;
-    T.filter(t=>t.lv===li).forEach(t=>{const s=st(t.id),m=mastered(t.id);
-      h+=`<button class="tbtn ${t.id===cur?'on':''}" style="--lc:${l.col}" data-id="${t.id}" ${t.id===cur?'aria-current="true"':''}><span class="nm"><b>${t.en}</b><small>${t.th}</small></span>${m?`<span class="passed" title="ผ่านแล้ว">${I('pass')}</span>`:`<span class="beads" aria-label="ถูกติดกัน ${s.s} จาก ${MASTER}">${Array.from({length:MASTER},(_,i)=>`<i class="${i<s.s?'f':''}"></i>`).join('')}</span>`}</button>`})});
-  side.innerHTML=h;
-  side.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{cur=b.dataset.id;setHash(cur);renderSide();renderLearn();window.scrollTo({top:0,behavior:'smooth'})})}
-function setHash(h){try{history.replaceState(null,'','#'+h)}catch(e){}}
-
-/* ---------- learn view ---------- */
-let ex,exStep,pr,prHintN,prTries,prT0,prDone;
-function renderLearn(){
-  const t=byId[cur],l=LV[t.lv];setLevelLight(t.lv);
-  let seen=false;try{seen=localStorage.getItem('mm-lab-seen')==='1'}catch(e){}
-  const fresh=!seen&&!T.some(x=>S[x.id]&&(S[x.id].c||S[x.id].w));
+function render(){
+  const b=belt(),nb=nextBelt(),bp=beltProgress(),t=today(),ratio=Math.min(1,t.a/GOAL),C=2*Math.PI*56;
+  const tot=totals(),w1=winAcc(6,0),w0=winAcc(13,7),sp=sprintRuns();
+  const cmp=w1.a>=10&&w0.a>=10?w1.pct-w0.pct:null;
+  const need=nb!==null?BELTS[nb].xp-bp.x:0;
   main.innerHTML=`
-  <section class="head">
-    <h1>${t.en}</h1><p class="th">${t.th}</p>
-    <p class="idea">${t.idea}</p>
-    <p class="meta"><span class="lv"><i class="dot"></i>${l.th}</span><span>ใช้เมื่อ: ${t.use}</span></p>
-  </section>
-  ${fresh?`<div class="note glass" id="note">${I('info')}<div style="flex:1"><b>วิธีใช้:</b> ดูตัวอย่างทางซ้ายทีละขั้น แล้วลองทำโจทย์ทางขวา ทำถูกติดกัน ${MASTER} ข้อโดยไม่ใช้คำใบ้ถือว่าผ่านเทคนิคนั้น พอคล่องแล้วไปที่ “ทดสอบรวม” เพื่อจับเวลา</div><button class="btn ghost" id="noteX">เข้าใจแล้ว</button></div>`:''}
-  <div id="recBox"></div>
-  <div class="panes">
-    <section class="pane glass" aria-labelledby="exH">
-      <div class="pane-h"><h2 id="exH">ตัวอย่างทีละขั้น</h2><button class="btn ghost" id="exNew">${I('refresh')}ตัวอย่างใหม่</button></div>
-      <div class="q" id="exQ"></div><div id="exPrism"></div><div class="viz" id="exViz"></div><ol class="steps" id="exSteps"></ol>
-      <div class="row" id="exRow"><button class="btn pri" id="exNext">ขั้นต่อไป ${I('next')}</button><button class="btn" id="exAll">${I('all')}แสดงทั้งหมด</button></div>
-    </section>
-    <section class="pane glass" aria-labelledby="prH">
-      <div class="pane-h"><h2 id="prH">ลองทำเอง</h2><div class="pstat" id="pStat"></div></div>
-      <div class="q" id="prQ"></div>
-      <div class="row"><input class="ans" id="prIn" inputmode="decimal" autocomplete="off" aria-label="คำตอบ" placeholder="คำตอบ"><button class="btn pri" id="prGo">${I('check')}ตรวจ</button></div>
-      <div class="row" style="margin-top:10px"><button class="btn" id="prHint">${I('hint')}ใบ้ทีละขั้น</button><button class="btn ghost" id="prSkip">${I('refresh')}ข้อใหม่</button></div>
-      <div class="fb" id="prFb" aria-live="polite"></div><div id="prPrism"></div><div class="viz" id="prViz"></div><ol class="steps" id="prSteps"></ol>
-      <p class="hint-line"><span class="kbd">Enter</span> ตรวจคำตอบ แล้วกดอีกครั้งเพื่อไปข้อต่อไป</p>
-    </section>
-  </div>`;
-  exNew.onclick=newEx;bindEx();if(window.noteX)noteX.onclick=()=>{try{localStorage.setItem('mm-lab-seen','1')}catch(e){}note.remove()};
-  prGo.onclick=checkPr;prSkip.onclick=newPr;prHint.onclick=hintPr;
-  prIn.onkeydown=e=>{if(e.key==='Enter'){prDone?newPr():checkPr()}};
-  newEx();newPr();renderRec();prIn.focus({preventScroll:true})}
-const qHTML=(q,ans)=>`<span>${q}</span> <span class="eq">=</span> ${ans===undefined?'<span class="eq">?</span>':`<span class="res">${f(ans)}</span>`}`;
-const EXROW=`<button class="btn pri" id="exNext">ขั้นต่อไป ${'NEXTICON'}</button><button class="btn" id="exAll">${'ALLICON'}แสดงทั้งหมด</button>`;
-function bindEx(){exNext.onclick=()=>stepEx(1);exAll.onclick=()=>stepEx(99)}
-function newEx(){ex=byId[cur].gen();exStep=0;exQ.innerHTML=qHTML(ex.q);exPrism.innerHTML='';exViz.innerHTML='';exSteps.innerHTML='';exRow.innerHTML=EXROW.replace('NEXTICON',I('next')).replace('ALLICON',I('all'));bindEx()}
-function stepEx(n){for(let i=0;i<n&&exStep<ex.steps.length;i++){
-  if(exStep===0){exPrism.innerHTML=prismHTML(ex.split);if(ex.viz)exViz.innerHTML=vizHTML(ex.viz,exViz)}
-  exSteps.insertAdjacentHTML('beforeend',`<li><span>${ex.steps[exStep++]}</span></li>`)}
-  if(exStep>=ex.steps.length){exQ.innerHTML=qHTML(ex.q,ex.ans);exRow.innerHTML=`<button class="btn" id="exAgain">${I('refresh')}ดูอีกตัวอย่าง</button>`;exAgain.onclick=newEx}}
-function pstat(){const s=st(cur);pStat.innerHTML=`<span>ติดกัน <b>${s.s}</b>/${MASTER}</span><span>ถูก <b>${s.c}</b></span><span>ผิด <b>${s.w}</b></span>`}
-function newPr(){pr=byId[cur].gen();prHintN=0;prTries=0;prDone=false;prT0=performance.now();
-  prQ.innerHTML=qHTML(pr.q);prIn.value='';prIn.className='ans';prFb.textContent='';prFb.className='fb';prPrism.innerHTML='';prViz.innerHTML='';prSteps.innerHTML='';prHint.disabled=false;prGo.disabled=false;pstat();prIn.focus({preventScroll:true})}
-const parse=v=>parseFloat(String(v).replace(/[, ]/g,''));
-const same=(a,b)=>Math.abs(a-b)<1e-9;
-function showSol(){if(!prPrism.innerHTML)prPrism.innerHTML=prismHTML(pr.split);if(!prViz.innerHTML)prViz.innerHTML=vizHTML(pr.viz,prViz);prSteps.innerHTML=pr.steps.map(s=>`<li><span>${s}</span></li>`).join('')}
-function finishPr(ok,msg){prDone=true;prHint.disabled=true;prGo.disabled=true;prQ.innerHTML=qHTML(pr.q,pr.ans);prFb.className='fb '+(ok?'ok':'bad');prFb.innerHTML=msg+` <span class="k">· Enter ไปข้อต่อไป</span>`;pstat();prIn.focus({preventScroll:true})}
-function checkPr(){if(prDone)return;const v=parse(prIn.value);if(isNaN(v)){prFb.className='fb bad';prFb.textContent='พิมพ์ตัวเลขก่อนกดตรวจ';return}
-  if(same(v,pr.ans)){prIn.className='ans ok';const sec=((performance.now()-prT0)/1000).toFixed(1);
-    const clean=prHintN===0&&prTries===0;record(cur,clean);
-    let msg=clean?`ถูก ใช้เวลา ${sec} วินาที`:`ถูกแล้ว (${sec} วินาที) แต่ใช้คำใบ้หรือตอบผิดไปก่อน จึงไม่นับเป็นข้อติดกัน`;
-    if(clean&&st(cur).s===MASTER&&st(cur).b===MASTER)msg+=` · ผ่านเทคนิคนี้แล้ว`;
-    finishPr(true,msg);if(!clean)showSol()}
-  else{prTries++;prIn.className='ans';void prIn.offsetWidth;prIn.className='ans bad';
-    if(prTries<2){prFb.className='fb bad';prFb.textContent='ยังไม่ถูก ลองอีกครั้ง หรือกด “ใบ้ทีละขั้น”'}
-    else{record(cur,false);showSol();finishPr(false,`คำตอบคือ ${f(pr.ans)} ดูวิธีคิดด้านล่าง`)}}}
-function hintPr(){if(prDone)return;if(prHintN===0)prPrism.innerHTML=prismHTML(pr.split)
-  prSteps.insertAdjacentHTML('beforeend',`<li><span>${pr.steps[prHintN++]}</span></li>`);
-  if(prHintN>=pr.steps.length){if(pr.viz)prViz.innerHTML=vizHTML(pr.viz,prViz);record(cur,false);finishPr(false,'เปิดเฉลยครบแล้ว ลองข้อใหม่ดู')}else prIn.focus({preventScroll:true})}
-
-/* ---------- mixed / sprint ---------- */
-let lvOn=[true,true,false],mode='sprint',mx=null;
-function renderMix(){
-  document.documentElement.style.setProperty('--lvl','var(--ink)');document.documentElement.style.setProperty('--lvl-soft','#bcd0ff');
-  main.innerHTML=`<section class="head"><h1>ทดสอบรวม</h1>
-  <p class="th">สุ่มโจทย์จากหลายเทคนิค โดยไม่บอกว่าต้องใช้วิธีไหน คุณต้องเลือกเอง</p></section>
-  <section class="pane glass" id="mxSet" style="margin-top:12px">
-    <div class="mix-set">
-      <span class="lab">ระดับ</span><div class="seg" id="lvChips">${LV.map((l,i)=>`<button class="tog" style="--lc:${l.col}" aria-pressed="${lvOn[i]}" data-i="${i}"><i class="sw"></i>${l.th}</button>`).join('')}</div>
-      <span class="lab">โหมด</span><div class="seg" id="mdChips"><button class="tog" aria-pressed="${mode==='sprint'}" data-m="sprint">${I('timer')}Sprint 60 วินาที</button><button class="tog" aria-pressed="${mode==='free'}" data-m="free">${I('free')}ไม่จับเวลา มีเฉลย</button></div>
-      <span></span><div><button class="btn pri" id="mxStart">${I('play')}เริ่มทดสอบ</button></div>
+  <section class="hero glass" aria-labelledby="hb">
+    <div>
+      <p class="eyebrow">สายของคุณ</p>
+      <h1 id="hb">สาย${BELTS[b].th}</h1>
+      <span class="band" style="--bc:${BELTS[b].col};--be:${BELTS[b].edge}" aria-hidden="true"></span>
+      ${nb!==null?`<div class="xp"><p class="xp-t"><span>${bp.x>=bp.to?`XP <b>${bp.x}</b> · ครบแล้ว พร้อมสอบ`:`XP <b>${bp.x}</b> / ${bp.to}`}</span><span>สายถัดไป: ${BELTS[nb].th}</span></p><div class="xp-bar" style="--bc:${BELTS[nb].col};--be:${BELTS[nb].edge};--w:${Math.round(bp.pct*100)}%"><i></i></div></div>`
+        :`<p class="xp-t"><span>ถึงสายดำแล้ว · XP <b>${bp.x}</b></span></p>`}
+      <div class="cta">
+        <a class="btn pri go" href="play.html#sprint">${I('play')}เริ่ม Sprint 60 วินาที</a>
+        ${nb===null?'':examOpen()?`<a class="btn go" href="play.html#exam">${I('belt')}สอบสาย${BELTS[nb].th}</a>`:`<span class="btn go locked" aria-disabled="true">${I('lock')}สอบสาย${BELTS[nb].th} · อีก ${need} XP</span>`}
+        <a class="btn" href="play.html#free">${I('free')}ไม่จับเวลา</a>
+      </div>
+      ${nb===null?'':`<p class="cta-note">สอบสาย${BELTS[nb].th}: Sprint 60 วินาที ถูกอย่างน้อย ${EXAM.need[nb]} ข้อและแม่น ≥${Math.round(EXAM.acc*100)}% · XP ได้จากข้อที่ตอบถูก (พื้นฐาน 1 · กลาง 2 · สูง 3)</p>`}
+    </div>
+    <div class="today">
+      <div class="today-l">
+        <div class="ring" role="img" aria-label="วันนี้ตอบแล้ว ${t.a} จากเป้า ${GOAL} ข้อ"><svg viewBox="0 0 132 132"><circle class="trk" cx="66" cy="66" r="56"/><circle class="val" cx="66" cy="66" r="56" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-ratio)).toFixed(1)}"/></svg><div class="mid"><b>${t.a}</b><small>/ ${GOAL} ข้อ</small></div></div>
+        <div><p class="eyebrow" style="margin:0">เป้าหมายวันนี้</p><p class="streak">${I('flame')}<span class="n">${streakDays()}</span>&nbsp;วันติดต่อกัน</p></div>
+      </div>
     </div>
   </section>
-  <div id="mxArea"></div>`;
-  lvChips.querySelectorAll('.tog').forEach(c=>c.onclick=()=>{const i=+c.dataset.i;lvOn[i]=!lvOn[i];if(!lvOn.some(x=>x))lvOn[i]=true;renderMix()});
-  mdChips.querySelectorAll('.tog').forEach(c=>c.onclick=()=>{mode=c.dataset.m;renderMix()});
-  mxStart.onclick=startMix}
-function startMix(){if(mx&&mx.timer)clearInterval(mx.timer);
-  const lvTxt=LV.filter((l,i)=>lvOn[i]).map(l=>l.th).join(', ');
-  mxSet.innerHTML=`<div class="row" style="justify-content:space-between"><span class="meta" style="margin:0"><span>${mode==='sprint'?I('timer')+'Sprint 60 วินาที':I('free')+'ไม่จับเวลา'}</span><span>ระดับ: ${lvTxt}</span></span><button class="btn ghost" id="mxReset">${I('refresh')}เปลี่ยนการตั้งค่า</button></div>`;
-  mxReset.onclick=()=>{if(mx&&mx.timer)clearInterval(mx.timer);renderMix()};
-  mx={pool:T.filter(t=>lvOn[t.lv]),score:0,total:0,miss:[],end:performance.now()+60000,timer:null,cur:null,tries:0,done:false};
-  mxArea.innerHTML=`<section class="stage glass">${mode==='sprint'?'<div class="timer"><i id="tBar"></i></div>':''}
-   <div class="score"><div>ถูก<b id="mScore">0</b></div><div>ทำไป<b id="mTot">0</b></div>${mode==='sprint'?'<div>เหลือ (วินาที)<b id="mTime">60</b></div>':''}</div>
-   <div class="q huge" id="mQ"></div>
-   <div class="row" style="justify-content:center"><input class="ans" id="mIn" inputmode="decimal" autocomplete="off" aria-label="คำตอบ" placeholder="คำตอบ">${mode==='free'?`<button class="btn ghost" id="mSkip">${I('refresh')}ข้อใหม่</button>`:''}</div>
-   <div class="tagline" id="mTag" aria-live="polite"></div><div id="mPrism"></div><div class="viz" id="mViz"></div><ol class="steps" id="mSteps"></ol>
-   ${mode==='free'?`<div class="row" style="justify-content:center;margin-top:6px"><button class="btn" id="mStop">${I('stop')}จบและดูสรุป</button></div>`:''}</section>`;
-  mIn.onkeydown=e=>{if(e.key==='Enter')mixAnswer()};
-  if(mode==='free'){mSkip.onclick=nextMix;mStop.onclick=endMix}
-  if(mode==='sprint')mx.timer=setInterval(()=>{const left=Math.max(0,mx.end-performance.now());tBar.style.transform=`scaleX(${left/60000})`;mTime.textContent=Math.ceil(left/1000);if(left<=0)endMix()},200);
-  nextMix();mIn.focus({preventScroll:true});}
-function nextMix(){const t=pick(mx.pool);mx.cur={t,p:t.gen()};mx.tries=0;mx.done=false;
-  mQ.innerHTML=qHTML(mx.cur.p.q);mIn.value='';mIn.className='ans';mTag.textContent='';mPrism.innerHTML='';mViz.innerHTML='';mSteps.innerHTML='';mIn.focus({preventScroll:true})}
-function mixAnswer(){const{t,p}=mx.cur;
-  if(mx.done){nextMix();return}
-  const v=parse(mIn.value);if(isNaN(v))return;
-  const ok=same(v,p.ans);
-  if(mode==='sprint'){mx.total++;if(ok){mx.score++;record(t.id,true)}else{record(t.id,false);mx.miss.push({t,p,v})}
-    mScore.textContent=mx.score;mTot.textContent=mx.total;nextMix();
-    mTag.innerHTML=ok?`<span class="okc">ข้อที่แล้วถูก</span> · ${t.en}`:`<span class="badc">ข้อที่แล้วผิด</span> · ${p.q} = ${f(p.ans)}`;return}
-  if(ok){mx.total++;mx.score++;if(mx.tries===0)record(t.id,true);mIn.className='ans ok';mQ.innerHTML=qHTML(p.q,p.ans);mTag.innerHTML=`<span class="okc">ถูก</span> · ทางลัดที่ใช้ได้คือ <b>${t.en}</b> (${t.th}) · Enter ข้อต่อไป`;mx.done=true}
-  else{mx.tries++;mIn.className='ans';void mIn.offsetWidth;mIn.className='ans bad';
-    if(mx.tries<2)mTag.innerHTML=`<span class="badc">ยังไม่ถูก</span> ลองอีกครั้ง`;
-    else{mx.total++;record(t.id,false);mx.miss.push({t,p,v});mx.done=true;mQ.innerHTML=qHTML(p.q,p.ans);
-      mTag.innerHTML=`<span class="badc">คำตอบคือ ${f(p.ans)}</span> · ใช้ <b>${t.en}</b> · Enter ข้อต่อไป`;
-      mPrism.innerHTML=prismHTML(p.split);mViz.innerHTML=vizHTML(p.viz,mViz);mSteps.innerHTML=p.steps.map(s=>`<li><span>${s}</span></li>`).join('')}}
-  mScore.textContent=mx.score;mTot.textContent=mx.total}
-function endMix(){clearInterval(mx.timer);const acc=mx.total?Math.round(100*mx.score/mx.total):0;
-  const weak=[...new Map(mx.miss.map(m=>[m.t.id,m.t])).values()];
-  mxArea.innerHTML=`<section class="stage glass"><div class="summary"><div><p class="sub">คะแนน</p><div class="big-n">${mx.score}<small> / ${mx.total}</small></div><p class="meta" style="margin-top:8px">ความแม่น ${acc}%${mode==='sprint'?` · ทำ ${mx.total} ข้อใน 60 วินาที`:` · ทำ ${mx.total} ข้อ`}</p></div>
-   <div><p class="sub">ควรทบทวน</p><div class="weak">${weak.length?weak.map(t=>`<div><button class="link" data-id="${t.id}">${t.en}</button> · ${t.th}</div>`).join(''):`<div>รอบนี้ไม่มีข้อผิด ลองเปิดระดับขั้นสูงดู</div>`}</div></div></div>
-   ${mx.miss.length?`<p class="sub" style="margin-top:22px">ข้อที่ผิด</p>`+mx.miss.map(m=>`<div class="miss"><div class="mq">${m.p.q} = ${f(m.p.ans)} <span>คุณตอบ ${f(m.v)}</span></div>${prismHTML(m.p.split,false)}<ol class="steps">${m.p.steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol></div>`).join(''):''}
-   <div class="row" style="margin-top:14px"><button class="btn pri" id="mAgain">${I('refresh')}เล่นอีกรอบ</button></div></section>`;
-  mAgain.onclick=startMix;
-  mxArea.querySelectorAll('[data-id]').forEach(a=>a.onclick=()=>{cur=a.dataset.id;go('learn')})}
 
-/* ---------- recommendation: what to practise next ---------- */
-function recommend(){
-  const acc=x=>x.s.c/(x.s.c+x.s.w);
-  const rows=T.map(t=>({t,s:st(t.id)}));
-  const weak=rows.filter(x=>!mastered(x.t.id)&&(x.s.c+x.s.w)>=3&&acc(x)<.7).sort((a,b)=>acc(a)-acc(b))[0];
-  if(weak)return{t:weak.t,why:`ถูกแค่ ${Math.round(acc(weak)*100)}% จาก ${weak.s.c+weak.s.w} ข้อ ควรฝึกซ้ำก่อนไปต่อ`};
-  const next=T.find(t=>!mastered(t.id));
-  if(next){const s=st(next.id);return{t:next,why:s.c+s.w?`ยังไม่ผ่าน (ติดกัน ${s.s}/${MASTER}) ฝึกต่อให้ครบ`:'เทคนิคถัดไปตามลำดับ'}}
-  return{t:null};
-}
-function renderRec(){
-  if(!window.recBox)return;const r=recommend();
-  if(r.t&&r.t.id===cur){recBox.innerHTML='';return}
-  recBox.innerHTML=r.t
-   ?`<div class="note glass">${I('prism')}<div style="flex:1"><b>แนะนำให้ฝึกต่อ: ${r.t.en}</b> · ${r.why}</div><button class="btn" id="recGo">ไปฝึก ${I('next')}</button></div>`
-   :`<div class="note glass">${I('prism')}<div style="flex:1"><b>ผ่านครบทุกเทคนิคแล้ว</b> · ลองทดสอบรวมระดับขั้นสูงแบบจับเวลา</div><button class="btn" id="recGo">ไปทดสอบรวม ${I('next')}</button></div>`;
-  recBox.querySelector('#recGo').onclick=()=>{if(r.t){cur=r.t.id;go('learn')}else{lvOn=[false,false,true];mode='sprint';go('mix')}};
-}
+  <section class="panel glass" aria-labelledby="hh">
+    <div class="panel-h"><h2 id="hh">วันที่เล่น 52 สัปดาห์ล่าสุด</h2>
+      <div class="seg2" role="group" aria-label="มุมมอง heatmap"><button data-m="vol" aria-pressed="${heatMode==='vol'}">จำนวนข้อ</button><button data-m="acc" aria-pressed="${heatMode==='acc'}">ความแม่น %</button></div></div>
+    ${tot.a?'':'<p class="empty" style="margin-bottom:10px">ยังไม่มีสถิติ เล่นรอบแรกแล้วช่องของวันนี้จะขึ้นสี</p>'}
+    ${heatHTML()}
+  </section>
 
-/* ---------- login + cloud sync (Supabase) ---------- */
-/* The key below is a publishable (client-side) key. Data is protected by row-level security:
-   each signed-in user can read and write only their own rows in public.technique_progress. */
-const SB_URL='https://ftogfctliqygrazncjra.supabase.co';
-const SB_KEY='sb_publishable_i6PTzYX_ZE7VR7zm_MhOSQ_pKPgactj';
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const SYNC_TXT={ok:'ซิงก์แล้ว',syncing:'กำลังซิงก์…',error:'ซิงก์ไม่สำเร็จ ข้อมูลยังอยู่ในเครื่อง'};
-let sb=null,user=null,syncState='ok';
-try{if(window.supabase)sb=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){sb=null}
-function setSync(s){syncState=s;const d=document.getElementById('syncDot');if(d)d.className='dot-sync '+s;const t=document.getElementById('syncTxt');if(t)t.textContent=SYNC_TXT[s]}
-const activeIds=()=>T.filter(t=>{const s=S[t.id];return s&&(s.c||s.w)}).map(t=>t.id);
-const pend={};
-function pushOne(id){if(!sb||!user)return;clearTimeout(pend[id]);pend[id]=setTimeout(()=>flush([id]),500)}
-async function flush(ids){
-  if(!sb||!user||!ids.length)return;setSync('syncing');
-  const rows=ids.map(id=>{const s=st(id);return{user_id:user.id,technique_id:id,correct:s.c,wrong:s.w,streak:s.s,best_streak:s.b,updated_at:new Date().toISOString()}});
-  try{const{error}=await sb.from('technique_progress').upsert(rows,{onConflict:'user_id,technique_id'});setSync(error?'error':'ok')}catch(e){setSync('error')}
-}
-/* merge rule: for each technique the side with more attempts wins its counts; best streak is the max of both */
-async function pullAndMerge(){
-  if(!sb||!user)return;setSync('syncing');
-  try{
-    const{data,error}=await sb.from('technique_progress').select('technique_id,correct,wrong,streak,best_streak');
-    if(error){setSync('error');return}
-    (data||[]).forEach(r=>{if(!byId[r.technique_id])return;const l=st(r.technique_id);
-      if(r.correct+r.wrong>l.c+l.w){l.c=r.correct;l.w=r.wrong;l.s=r.streak}
-      l.b=Math.max(l.b,r.best_streak)});
-    save();renderStats();renderSide();if(view==='learn'&&window.pStat){pstat();renderRec()}
-    await flush(activeIds());
-  }catch(e){setSync('error')}
-}
-function renderAuth(){
-  if(!sb){authBox.innerHTML='';return}
-  if(!user){authBox.innerHTML=`<button class="btn" id="authOpen">${I('user')}เข้าสู่ระบบ</button>`;authOpen.onclick=()=>openDlg('in');return}
-  authBox.innerHTML=`<button class="btn ghost" id="authMe" aria-label="บัญชีของฉัน"><i class="dot-sync ${syncState}" id="syncDot"></i><span class="who">${esc(user.email||'บัญชีของฉัน')}</span></button>`;
-  authMe.onclick=()=>openDlg('account');
-}
-function errTh(m){m=String(m||'');
-  if(/Invalid login credentials/i.test(m))return'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
-  if(/Email not confirmed/i.test(m))return'ยังไม่ได้ยืนยันอีเมล เปิดลิงก์ในอีเมลก่อนแล้วลองใหม่';
-  if(/already registered|already been registered/i.test(m))return'อีเมลนี้สมัครไว้แล้ว ลองกดเข้าสู่ระบบ';
-  if(/at least \d+ characters|weak/i.test(m))return'รหัสผ่านสั้นเกินไป ใช้อย่างน้อย 6 ตัว';
-  if(/rate limit|too many/i.test(m))return'ส่งคำขอบ่อยเกินไป รอสักครู่แล้วลองใหม่';
-  if(/invalid.*email|valid email/i.test(m))return'รูปแบบอีเมลไม่ถูกต้อง';
-  if(/fetch|network|Failed/i.test(m))return'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (หน้า artifact ใน claude.ai บล็อกการเชื่อมต่อภายนอก ให้เปิดเว็บจากที่โฮสต์เอง)';
-  return'เกิดข้อผิดพลาด: '+m}
-let lastFocus=null;
-function closeDlg(){const e=document.getElementById('scrim');if(e){e.remove();if(lastFocus&&lastFocus.focus)lastFocus.focus()}}
-function openDlg(kind){
-  closeDlg();lastFocus=document.activeElement;
-  const el=document.createElement('div');el.className='scrim';el.id='scrim';
-  el.innerHTML=kind==='in'
-   ?`<div class="dlg glass" role="dialog" aria-modal="true" aria-labelledby="dlgT"><h2 class="dlg-t" id="dlgT">เข้าสู่ระบบ</h2>
-     <p class="dlg-s">เพื่อให้ความคืบหน้าตามไปทุกเครื่อง ไม่เข้าสู่ระบบก็ใช้งานได้ตามปกติ</p>
-     <label class="lab" for="aEmail">อีเมล</label><input class="inp" id="aEmail" type="email" autocomplete="email" inputmode="email">
-     <label class="lab" for="aPass">รหัสผ่าน (อย่างน้อย 6 ตัว)</label><input class="inp" id="aPass" type="password" autocomplete="current-password">
-     <div class="fb" id="aMsg" aria-live="polite"></div>
-     <div class="row"><button class="btn pri" id="aIn">เข้าสู่ระบบ</button><button class="btn" id="aUp">สมัครใหม่</button><button class="btn ghost" id="aX" style="margin-left:auto">ปิด</button></div></div>`
-   :`<div class="dlg glass" role="dialog" aria-modal="true" aria-labelledby="dlgT"><h2 class="dlg-t" id="dlgT">บัญชีของฉัน</h2>
-     <div class="kv"><i class="dot-sync ${syncState}" id="syncDot"></i><span id="syncTxt">${SYNC_TXT[syncState]}</span></div>
-     <p class="dlg-s" style="margin-top:6px">${esc(user.email||'')}</p>
-     <div class="fb info" id="aMsg" aria-live="polite"></div>
-     <div class="row"><button class="btn" id="aSync">${I('refresh')}ซิงก์ตอนนี้</button><button class="btn" id="aOut">ออกจากระบบ</button><button class="btn ghost" id="aX" style="margin-left:auto">ปิด</button></div>
-     <p class="fine">หลังออกจากระบบ ข้อมูลในเครื่องนี้จะถูกล้าง (ข้อมูลยังอยู่ในบัญชี) เพื่อไม่ให้ปนกับคนอื่นที่ใช้เครื่องเดียวกัน</p></div>`;
-  document.body.appendChild(el);
-  const dlg=el.firstElementChild,msg=()=>document.getElementById('aMsg');
-  const say=(t,cls)=>{msg().className='fb '+(cls||'');msg().textContent=t};
-  const busy=b=>dlg.querySelectorAll('button').forEach(x=>x.disabled=b);
-  el.addEventListener('mousedown',e=>{if(e.target===el)closeDlg()});
-  dlg.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){closeDlg();return}
-    if(e.key==='Tab'){const f=[...dlg.querySelectorAll('input,button:not(:disabled)')];if(!f.length)return;const a=f[0],z=f[f.length-1];
-      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
-  document.getElementById('aX').onclick=closeDlg;
-  if(kind==='in'){
-    const em=()=>aEmail.value.trim(),pw=()=>aPass.value;
-    const need=()=>{if(!em()||!pw()){say('กรอกอีเมลและรหัสผ่านก่อน','bad');return false}return true};
-    aIn.onclick=async()=>{if(!need())return;busy(true);say('กำลังเข้าสู่ระบบ…','info');
-      try{const{error}=await sb.auth.signInWithPassword({email:em(),password:pw()});
-        if(error){say(errTh(error.message),'bad');busy(false);return}closeDlg()}
-      catch(e){say(errTh(e.message),'bad');busy(false)}};
-    aUp.onclick=async()=>{if(!need())return;busy(true);say('กำลังสมัคร…','info');
-      try{const{data,error}=await sb.auth.signUp({email:em(),password:pw(),options:{emailRedirectTo:location.href.split('#')[0]}});
-        if(error){say(errTh(error.message),'bad');busy(false);return}
-        if(data.session){closeDlg()}
-        else{say('ส่งอีเมลยืนยันให้แล้ว เปิดลิงก์ในอีเมล แล้วกลับมากดเข้าสู่ระบบ','info');busy(false)}}
-      catch(e){say(errTh(e.message),'bad');busy(false)}};
-    aPass.onkeydown=e=>{if(e.key==='Enter')aIn.onclick()};
-    aEmail.onkeydown=e=>{if(e.key==='Enter')aPass.focus()};
-    aEmail.focus();
-  }else{
-    aSync.onclick=async()=>{busy(true);await pullAndMerge();busy(false);say(syncState==='error'?SYNC_TXT.error:'ซิงก์เรียบร้อย')};
-    aOut.onclick=async()=>{busy(true);say('กำลังบันทึกข้อมูลก่อนออก…');
-      await flush(activeIds());
-      if(syncState==='error'){say('ซิงก์ไม่สำเร็จ จึงยังไม่ออกจากระบบ เพื่อกันข้อมูลหาย ลองใหม่อีกครั้ง','bad');busy(false);return}
-      try{await sb.auth.signOut()}catch(e){}
-      S={};save();user=null;closeDlg();renderAuth();renderStats();renderSide();view==='learn'?renderLearn():renderMix()};
-    aSync.focus();
-  }
-}
-async function initAuth(){
-  if(!sb){renderAuth();return}
-  try{const{data}=await sb.auth.getSession();user=data.session?data.session.user:null}catch(e){user=null}
-  renderAuth();
-  sb.auth.onAuthStateChange((ev,sess)=>{const u=sess?sess.user:null,was=user;user=u;renderAuth();
-    if(u&&(!was||was.id!==u.id))setTimeout(pullAndMerge,0)});
-  if(user)pullAndMerge();
-}
+  <section class="panel glass" aria-labelledby="hs">
+    <div class="panel-h"><h2 id="hs">สถิติของคุณ</h2></div>
+    <dl class="facts">
+      <div><dt>Sprint สูงสุด</dt><dd>${sp.length?bestSprint():'–'} <small>${sp.length?`ข้อ · ${sp.length} รอบ`:''}</small></dd></div>
+      <div><dt>ถูกติดกันสูงสุด</dt><dd>${D.runs.length?bestRunStreak():'–'} <small>${D.runs.length?'ข้อในรอบเดียว':''}</small></dd></div>
+      <div><dt>ตอบทั้งหมด</dt><dd>${tot.a} <small>${tot.a?`ข้อ · ถูก ${Math.round(100*tot.c/tot.a)}%`:''}</small></dd></div>
+      <div><dt>แม่น 7 วันล่าสุด</dt><dd>${w1.a?w1.pct+'%':'–'} ${cmp===null?'':`<small class="${cmp>=0?'up':'down'}">${cmp>=0?'+':'−'}${Math.abs(cmp)} จุด จากสัปดาห์ก่อน</small>`}</dd></div>
+    </dl>
+    ${trendHTML()}
+  </section>`;
+  heat.addEventListener('click',e=>{const c=e.target.closest('.cell[data-k]');if(c)readDay(c.dataset.k)});
+  heat.addEventListener('mouseover',e=>{const c=e.target.closest('.cell[data-k]');if(c)readDay(c.dataset.k)});
+  heat.addEventListener('focusin',e=>{const c=e.target.closest('.cell[data-k]');if(c)readDay(c.dataset.k)});
+  readDay(dayKey());
+  document.querySelectorAll('.seg2 button').forEach(x=>x.onclick=()=>{heatMode=x.dataset.m;const sc=heatWrap.scrollLeft;render();heatWrap.scrollLeft=sc});
+  heatWrap.scrollLeft=heatWrap.scrollWidth;
+  updateChip()}
 
-/* ---------- tabs ---------- */
-function go(v){view=v;tabLearn.classList.toggle('on',v==='learn');tabMix.classList.toggle('on',v==='mix');
-  tabLearn.setAttribute('aria-current',v==='learn');tabMix.setAttribute('aria-current',v==='mix');
-  if(mx&&mx.timer)clearInterval(mx.timer);setHash(v==='learn'?cur:'mix');renderSide();v==='learn'?renderLearn():renderMix();window.scrollTo({top:0})}
-tabLearn.onclick=()=>go('learn');tabMix.onclick=()=>go('mix');
-renderStats();go(view);initAuth();
+window.onData=render;
+mountShell('home');render();initAuth();
 </script>
 </body>
 </html>

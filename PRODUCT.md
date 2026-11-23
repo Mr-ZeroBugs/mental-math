@@ -21,6 +21,7 @@ Every problem is generated together with its own worked solution in that techniq
 - Mixed test: random problems across chosen levels, Sprint (60 s) or untimed with solutions; end summary lists techniques to review.
 - Game: Sprint 60 s, untimed with solutions, and belt exams. XP is derived from correct answers (1/2/3 by level). Six belts (white to black); each belt has an exam (Sprint with a target score and accuracy). Targets and XP thresholds are first guesses, not calibrated.
 - Competition is only against yourself: personal bests, daily goal (30 answers), day streak, GitHub-style heatmap (volume or accuracy), weekly accuracy trend. No leaderboard or duels.
+- Pen mode (Play page): pen 1 writes the answer, read in the browser as a number (digits, decimal point, minus); pen 2 is scratch only. Low-confidence reads show "อ่านไม่ออก" and are not counted wrong. Real-handwriting accuracy is unmeasured until tested on the user's iPad.
 - Data lives in localStorage and syncs to Supabase when signed in (technique_progress, daily_stats, play_runs; own-row RLS).
 - Static multi-page site (index, learn, play) intended for GitHub Pages; login only works on a hosted copy.
 - UI language: Thai, with technique names in English.

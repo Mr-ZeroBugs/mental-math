@@ -7,6 +7,7 @@
 - Home page = start the game: belt + XP, daily goal and day streak, GitHub-style heatmap (volume or accuracy), personal bests, weekly accuracy trend
 - Play page: Sprint 60 s, untimed with solutions, or a belt exam (6 belts, white to black); each run is saved and compared with your best
 - Learn page holds the 18 techniques
+- Pen mode in the Play page: two inks (pen 1 = answer, read as a number; pen 2 = scratch, never read). iPad: tap a pen; keyboard: keys 1 / 2. Handwriting is read by a small CNN that runs in the browser (`js/recog.js`, weights in `js/digit-model.js`, about 37 KB); when it is not sure it says so instead of marking the answer wrong. Training scripts are in `tools/` (numpy only, MNIST plus synthetic pen strokes).
 - "Recommended next" strip: points to the technique you are weakest at (under 70% after 3+ attempts), else the next one not yet passed
 - Optional login (email + password via Supabase) to sync progress across devices. Without login everything still works and is saved in the browser (localStorage).
 

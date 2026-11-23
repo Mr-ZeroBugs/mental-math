@@ -29,7 +29,7 @@ create policy "own rows delete" on public.technique_progress
 
 -- Calc Dojo stats (migration: create_daily_stats_and_play_runs). Same own-row RLS and grants as above.
 -- daily_stats: one row per user per local day (attempts, correct) -> heatmap.
--- play_runs: one row per finished sprint / free / exam run (client_id makes uploads idempotent) -> personal bests, belt passes.
+-- play_runs: one row per finished sprint / free / exam run (client_id makes uploads idempotent) -> personal bests, Tempo history.
 create table public.daily_stats (
   user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
   day date not null,
@@ -49,6 +49,7 @@ create table public.play_runs (
   best_streak integer not null default 0 check (best_streak >= 0 and best_streak <= 10000),
   belt integer not null default 0 check (belt between 0 and 5),
   passed boolean not null default false,
+  tempo numeric(6,2) check (tempo is null or (tempo >= 0 and tempo <= 1000)), -- migration play_runs_add_tempo; belt/passed are legacy, unused
   primary key (user_id, client_id)
 );
 -- (RLS enabled, anon revoked, authenticated limited to select/insert/update/delete, 4 own-row policies per table)

@@ -19,7 +19,7 @@ Every problem is generated together with its own worked solution in that techniq
 - 18 techniques in three levels (Basic, Intermediate, Advanced); each has an explanation, "when to use", a step-by-step worked example, and a practice loop with step-by-step hints.
 - Mastery: 5 correct in a row without hints marks a technique as passed.
 - Mixed test: random problems across chosen levels, Sprint (60 s) or untimed with solutions; end summary lists techniques to review.
-- Game: Sprint 60 s, untimed with solutions, and belt exams. XP is derived from correct answers (1/2/3 by level). Six belts (white to black); each belt has an exam (Sprint with a target score and accuracy). Targets and XP thresholds are first guesses, not calibrated.
+- Game: Sprint 60 s and untimed with solutions. Rating = Tempo: weighted correct answers per minute in Sprint (weights 1/1.5/2 by level), averaged over the last 5 sprints and compared with the 5 before. Six tiers (warm-up, 5, 8, 12, 16, 20). Weights and tier thresholds are first guesses, not calibrated.
 - Competition is only against yourself: personal bests, daily goal (30 answers), day streak, GitHub-style heatmap (volume or accuracy), weekly accuracy trend. No leaderboard or duels.
 - Pen mode (Play page): pen 1 writes the answer, read in the browser as a number (digits, decimal point, minus); pen 2 is scratch only. Low-confidence reads show "อ่านไม่ออก" and are not counted wrong. Real-handwriting accuracy is unmeasured until tested on the user's iPad.
 - Data lives in localStorage and syncs to Supabase when signed in (technique_progress, daily_stats, play_runs; own-row RLS).
@@ -27,7 +27,7 @@ Every problem is generated together with its own worked solution in that techniq
 - UI language: Thai, with technique names in English.
 
 ## Brand Commitments
-- Visual direction pinned by the user: "premium liquid glass, light". Dojo direction chosen by the user: belts and training hall, calm and disciplined rather than arcade.
+- Visual direction pinned by the user: "premium liquid glass, light". Dojo direction chosen by the user: training hall, calm and disciplined rather than arcade; the progress gimmick is Tempo (speed rating), belts were dropped.
 - No generic AI-slop look.
 
 ## Evidence on Hand

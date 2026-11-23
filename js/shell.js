@@ -1,4 +1,4 @@
-/* ============ Calc Dojo shell: light field, icon sprite, header, belt chip ============ */
+/* ============ Calc Dojo shell: light field, icon sprite, header, tempo chip ============ */
 const NAV=[['home','index.html','ลานฝึก'],['learn','learn.html','เรียนเทคนิค'],['play','play.html','เล่น']];
 const SPRITE=`<svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20v-4h-4"/></symbol>
@@ -17,12 +17,9 @@ const SPRITE=`<svg width="0" height="0" style="position:absolute" aria-hidden="t
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.2 2-4.2.2 1.2.8 2 1.6 2.4C10.2 8 10.6 5.4 12 3Z"/></symbol>
   <symbol id="i-pen" viewBox="0 0 24 24"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19l-4 1Z"/><path d="m14 7 3 3"/></symbol>
-  <symbol id="i-belt" viewBox="0 0 24 24"><path d="M3 9h18v6H3z"/><path d="M10 9v6M14 9v6"/><path d="m8 15-2 5M16 15l2 5"/></symbol>
 </svg>`;
 const MARK=`<svg viewBox="0 0 60 52" aria-hidden="true"><path d="M2 30 L19 27" stroke="#9aa1bf" stroke-width="2.4" stroke-linecap="round"/><path d="M26 6 L42 40 L10 40 Z" fill="rgba(255,255,255,.7)" stroke="#141833" stroke-width="2.2" stroke-linejoin="round"/><path d="M34 26 L58 16" stroke="#2f5bea" stroke-width="2.4" stroke-linecap="round"/><path d="M35 28 L58 28" stroke="#b0247f" stroke-width="2.4" stroke-linecap="round"/><path d="M34 30 L58 40" stroke="#c4510f" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 
-/* a small belt swatch: coloured band with a knot */
-const beltSwatch=(b,cls='bw')=>`<span class="${cls}" style="--bc:${BELTS[b].col};--be:${BELTS[b].edge}" aria-hidden="true"></span>`;
 
 function mountShell(active){
   document.body.insertAdjacentHTML('afterbegin',
@@ -30,10 +27,10 @@ function mountShell(active){
     <header class="top glass">
       <a class="brand" href="index.html" aria-label="Calc Dojo หน้าหลัก">${MARK}Calc Dojo</a>
       <nav class="tabs" aria-label="เมนู">${NAV.map(([id,href,th])=>`<a href="${href}" class="${id===active?'on':''}" ${id===active?'aria-current="page"':''}>${th}</a>`).join('')}</nav>
-      <a class="beltchip" id="beltChip" href="index.html" aria-label="สายและ XP"></a>
+      <a class="beltchip" id="beltChip" href="index.html" aria-label="Tempo"></a>
       <div class="authbox" id="authBox"></div>
     </header>`);
   updateChip()}
 function updateChip(){
   const c=document.getElementById('beltChip');if(!c)return;
-  c.innerHTML=`${beltSwatch(belt())}<span>สาย${BELTS[belt()].th}</span><b class="n">${xp()}</b><small>XP</small>`}
+  const t=tempoNow();c.innerHTML=`<span>Tempo</span><b class="n">${t?t.v.toFixed(1):'–'}</b>${t?'<small>ข้อ/นาที</small>':''}`}

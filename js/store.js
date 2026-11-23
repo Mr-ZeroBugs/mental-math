@@ -1,12 +1,12 @@
-/* ============ Calc Dojo store: progress, daily stats, runs, XP, belts, cloud sync, login ============ */
+/* ============ Calc Dojo store: progress, daily stats, runs, Tempo, cloud sync, login ============ */
 /* Needs core.js first (T, byId, MASTER, I, f). Pages may define: window.onData() -> re-render after data changes. */
 
 /* ---------- local storage ---------- */
 const KEY='mm-lab-v1', DKEY='mm-dojo-v1', PKEY='mm-play-v1';
 let S={};      // per technique: {c,w,s,b}
-let D={days:{},runs:[],belt:0}; // days: {'YYYY-MM-DD':{a,c}}, runs: finished plays, belt: highest belt passed (0 = white)
+let D={days:{},runs:[]}; // days: {'YYYY-MM-DD':{a,c}}, runs: finished plays {cid,t,mode,sc,tot,secs,bs,tp}
 try{S=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){S={}}
-try{const d=JSON.parse(localStorage.getItem(DKEY)||'null');if(d&&d.days)D={days:d.days,runs:d.runs||[],belt:d.belt|0}}catch(e){}
+try{const d=JSON.parse(localStorage.getItem(DKEY)||'null');if(d&&d.days)D={days:d.days,runs:d.runs||[]}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const saveD=()=>{try{localStorage.setItem(DKEY,JSON.stringify(D))}catch(e){}};
 const st=id=>S[id]||(S[id]={c:0,w:0,s:0,b:0});
@@ -25,26 +25,19 @@ const addDays=(d,n)=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate())
 const TH_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const thDate=k=>{const d=fromKey(k);return `${d.getDate()} ${TH_M[d.getMonth()]}`};
 
-/* ---------- XP + belts ---------- */
-/* XP is derived, not stored: each correct answer is worth 1 / 2 / 3 XP by technique level.
-   That means it follows the per-technique counts that already sync. */
-const XPW=[1,2,3];
-const xp=()=>T.reduce((a,t)=>a+st(t.id).c*XPW[t.lv],0);
-/* Belt colours mean belt only. Unlock XP and exam targets are first guesses, not calibrated on data. */
-const BELTS=[
-  {th:'ขาว',  col:'#f6f7fb',edge:'#8d94b4',xp:0},
-  {th:'เหลือง',col:'#e8b923',edge:'#a8830a',xp:50},
-  {th:'เขียว',  col:'#2e9e5b',edge:'#1f7440',xp:150},
-  {th:'น้ำเงิน',col:'#2a5fd6',edge:'#1c43a0',xp:350},
-  {th:'น้ำตาล',col:'#7d4b2a',edge:'#573219',xp:700},
-  {th:'ดำ',    col:'#141833',edge:'#000000',xp:1200}
-];
-const EXAM={need:[0,8,10,12,14,16],acc:.85,secs:60,lv:b=>b<=2?[true,false,false]:b<=4?[true,true,false]:[true,true,true]};
-const belt=()=>D.belt;
-const nextBelt=()=>D.belt<5?D.belt+1:null;
-const examOpen=()=>{const n=nextBelt();return n!==null&&xp()>=BELTS[n].xp};
-function beltProgress(){const x=xp(),n=nextBelt();if(n===null)return{x,n:null,pct:1,from:BELTS[5].xp,to:BELTS[5].xp};
-  const from=BELTS[D.belt].xp,to=BELTS[n].xp;return{x,n,from,to,pct:Math.max(0,Math.min(1,(x-from)/(to-from)))}}
+/* ---------- Tempo ---------- */
+/* Tempo = weighted correct answers per minute in a Sprint. Harder levels count more (1 / 1.5 / 2), so only answering
+   fast AND on harder problems raises it; doing lots of easy problems slowly does not.
+   Your current Tempo is the average of your last 5 Sprints. Weights and tier thresholds are first guesses, not calibrated. */
+const TW=[1,1.5,2];
+const TIERS=[{th:'อุ่นเครื่อง',at:0},{th:'ติดจังหวะ',at:5},{th:'คล่อง',at:8},{th:'ไว',at:12},{th:'เฉียบ',at:16},{th:'ทะลุ',at:20}];
+const tierIdx=v=>{let k=0;TIERS.forEach((t,i)=>{if(v>=t.at)k=i});return k};
+const runTempo=r=>r.tp!=null?r.tp:r.secs>0?+(r.sc/(r.secs/60)).toFixed(2):0;
+const tempos=()=>D.runs.filter(r=>r.mode==='sprint'&&r.tot>0).map(runTempo);
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+function tempoNow(upTo){const t=tempos();const a=t.slice(Math.max(0,(upTo==null?t.length:upTo)-5),upTo==null?t.length:upTo);return a.length?{v:avg(a),n:a.length}:null}
+function tempoPrev(){const t=tempos();if(t.length<8)return null;const a=t.slice(Math.max(0,t.length-10),t.length-5);return a.length>=3?{v:avg(a),n:a.length}:null}
+const tempoBest=()=>tempos().reduce((m,v)=>Math.max(m,v),0);
 
 /* ---------- recording ---------- */
 const GOAL=30; // answers per day
@@ -53,9 +46,8 @@ function record(id,ok){
   const k=dayKey(),d=D.days[k]||(D.days[k]={a:0,c:0});d.a++;if(ok)d.c++;
   save();saveD();pushOne(id);pushDay(k);dataChanged()}
 function addRun(r){
-  const run={cid:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t:new Date().toISOString(),mode:r.mode,sc:r.score,tot:r.total,secs:r.secs,bs:r.bs,belt:r.belt||0,pass:!!r.passed};
+  const run={cid:Date.now().toString(36)+Math.random().toString(36).slice(2,7),t:new Date().toISOString(),mode:r.mode,sc:r.score,tot:r.total,secs:r.secs,bs:r.bs,tp:r.secs>0?+(r.wc/(r.secs/60)).toFixed(2):0};
   D.runs.push(run);if(D.runs.length>300)D.runs=D.runs.slice(-300);
-  if(run.pass&&run.belt>D.belt)D.belt=run.belt;
   saveD();pushRuns([run]);dataChanged();return run}
 
 /* ---------- derived stats ---------- */
@@ -88,7 +80,7 @@ async function upsert(table,rows,conflict){
   catch(e){setSync('error');return false}}
 const techRow=id=>{const s=st(id);return{user_id:user.id,technique_id:id,correct:s.c,wrong:s.w,streak:s.s,best_streak:s.b,updated_at:new Date().toISOString()}};
 const dayRow=k=>({user_id:user.id,day:k,attempts:D.days[k].a,correct:D.days[k].c,updated_at:new Date().toISOString()});
-const runRow=r=>({user_id:user.id,client_id:r.cid,played_at:r.t,mode:r.mode,score:r.sc,total:r.tot,secs:r.secs|0,best_streak:r.bs|0,belt:r.belt|0,passed:!!r.pass});
+const runRow=r=>({user_id:user.id,client_id:r.cid,played_at:r.t,mode:r.mode,score:r.sc,total:r.tot,secs:r.secs|0,best_streak:r.bs|0,belt:0,passed:false,tempo:r.tp==null?null:r.tp});
 function pushOne(id){later('t'+id,()=>upsert('technique_progress',[techRow(id)],'user_id,technique_id'))}
 function pushDay(k){later('d'+k,()=>D.days[k]&&upsert('daily_stats',[dayRow(k)],'user_id,day'))}
 function pushRuns(rs){if(sb&&user)upsert('play_runs',rs.map(runRow),'user_id,client_id')}
@@ -99,21 +91,20 @@ async function flushAll(){
   const c=await upsert('play_runs',D.runs.map(runRow),'user_id,client_id');
   setSync(a&&b&&c?'ok':'error');return a&&b&&c}
 /* merge rules: per technique and per day the side with more attempts wins its counts (best streak = max);
-   runs are a union by client id; belt = highest passed on either side. */
+   runs are a union by client id. */
 async function pullAndMerge(){
   if(!sb||!user)return;setSync('syncing');
   try{
     const[t,d,r]=await Promise.all([
       sb.from('technique_progress').select('technique_id,correct,wrong,streak,best_streak'),
       sb.from('daily_stats').select('day,attempts,correct'),
-      sb.from('play_runs').select('client_id,played_at,mode,score,total,secs,best_streak,belt,passed').order('played_at',{ascending:false}).limit(300)]);
+      sb.from('play_runs').select('client_id,played_at,mode,score,total,secs,best_streak,tempo').order('played_at',{ascending:false}).limit(300)]);
     if(t.error||d.error||r.error){setSync('error');return}
     (t.data||[]).forEach(x=>{if(!byId[x.technique_id])return;const l=st(x.technique_id);
       if(x.correct+x.wrong>l.c+l.w){l.c=x.correct;l.w=x.wrong;l.s=x.streak}l.b=Math.max(l.b,x.best_streak)});
     (d.data||[]).forEach(x=>{const k=String(x.day).slice(0,10),l=D.days[k];if(!l||x.attempts>l.a)D.days[k]={a:x.attempts,c:x.correct}});
     const have=new Set(D.runs.map(x=>x.cid));
-    (r.data||[]).forEach(x=>{if(!have.has(x.client_id))D.runs.push({cid:x.client_id,t:x.played_at,mode:x.mode,sc:x.score,tot:x.total,secs:x.secs,bs:x.best_streak,belt:x.belt,pass:x.passed});
-      if(x.passed&&x.belt>D.belt)D.belt=x.belt});
+    (r.data||[]).forEach(x=>{if(!have.has(x.client_id))D.runs.push({cid:x.client_id,t:x.played_at,mode:x.mode,sc:x.score,tot:x.total,secs:x.secs,bs:x.best_streak,tp:x.tempo==null?null:+x.tempo})});
     D.runs.sort((a,b)=>a.t<b.t?-1:1);if(D.runs.length>300)D.runs=D.runs.slice(-300);
     save();saveD();dataChanged();
     await flushAll();
@@ -142,7 +133,7 @@ function openDlg(kind){
   const el=document.createElement('div');el.className='scrim';el.id='scrim';
   el.innerHTML=kind==='in'
    ?`<div class="dlg glass" role="dialog" aria-modal="true" aria-labelledby="dlgT"><h2 class="dlg-t" id="dlgT">เข้าสู่ระบบ</h2>
-     <p class="dlg-s">เพื่อให้สถิติและสายตามไปทุกเครื่อง ไม่เข้าสู่ระบบก็ใช้งานได้ตามปกติ</p>
+     <p class="dlg-s">เพื่อให้สถิติและ Tempo ตามไปทุกเครื่อง ไม่เข้าสู่ระบบก็ใช้งานได้ตามปกติ</p>
      <label class="lab" for="aEmail">อีเมล</label><input class="inp" id="aEmail" type="email" autocomplete="email" inputmode="email">
      <label class="lab" for="aPass">รหัสผ่าน (อย่างน้อย 6 ตัว)</label><input class="inp" id="aPass" type="password" autocomplete="current-password">
      <div class="fb" id="aMsg" aria-live="polite"></div>
@@ -185,7 +176,7 @@ function openDlg(kind){
       const ok=await flushAll();
       if(!ok){say('ซิงก์ไม่สำเร็จ จึงยังไม่ออกจากระบบ เพื่อกันข้อมูลหาย ลองใหม่อีกครั้ง','bad');busy(false);return}
       try{await sb.auth.signOut()}catch(e){}
-      S={};D={days:{},runs:[],belt:0};save();saveD();user=null;closeDlg();renderAuth();dataChanged()};
+      S={};D={days:{},runs:[]};save();saveD();user=null;closeDlg();renderAuth();dataChanged()};
     aSync.focus();
   }
 }

@@ -42,36 +42,39 @@ function readDay(k){
   const x=D.days[k];
   heatRead.innerHTML=x&&x.a?`<b>${thDate(k)}</b> · เล่น <b>${x.a}</b> ข้อ · ถูก <b>${pct(x)}%</b>`:`<b>${thDate(k)}</b> · ไม่ได้เล่น`}
 
+function lineHTML(pts,lab,aria,fmt){
+  const have=pts.filter(v=>v!==null);
+  const W=Math.max(300,Math.min(760,document.documentElement.clientWidth-130)),H=84,pad=10,n=pts.length;
+  const lo=Math.min(...have)-(Math.max(...have)-Math.min(...have)||1)*.25,hi=Math.max(...have)+(Math.max(...have)-Math.min(...have)||1)*.25;
+  const X=i=>pad+i*(W-2*pad)/Math.max(1,n-1),Y=v=>H-pad-(v-lo)/(hi-lo||1)*(H-2*pad);
+  let path='',dots='';pts.forEach((v,i)=>{if(v===null)return;path+=(path?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);dots+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4" fill="#fff" stroke="#0b7f6a" stroke-width="2"/>`});
+  return `<div class="trend"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${aria}: ${have.map(fmt).join(', ')}"><path d="${path}" fill="none" stroke="#0b7f6a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${dots}</svg><p>${lab}</p></div>`}
 function trendHTML(){
+  const tp=tempos().slice(-20);
+  const t1=tp.length>=3?lineHTML(tp,`Tempo ของ Sprint ล่าสุด ${tp.length} รอบ จาก ${tp[0].toFixed(1)} เป็น ${tp[tp.length-1].toFixed(1)}`,'Tempo รายรอบ',v=>v.toFixed(1)):`<div class="trend"><p>กราฟ Tempo จะขึ้นเมื่อเล่น Sprint ครบ 3 รอบ</p></div>`;
   const pts=[];for(let i=7;i>=0;i--){const w=winAcc(i*7+6,i*7);pts.push(w.a>=10?w.pct:null)}
   const have=pts.filter(v=>v!==null);
-  if(have.length<2)return `<div class="trend"><p>เส้นพัฒนาการรายสัปดาห์จะขึ้นเมื่อมีอย่างน้อย 2 สัปดาห์ที่ทำครบ 10 ข้อขึ้นไป</p></div>`;
-  const lo=Math.max(0,Math.min(...have)-8),hi=Math.min(100,Math.max(...have)+8),W=Math.max(300,Math.min(760,document.documentElement.clientWidth-130)),H=84,pad=10;
-  const X=i=>pad+i*(W-2*pad)/7,Y=v=>H-pad-(v-lo)/(hi-lo||1)*(H-2*pad);
-  let path='',dots='';pts.forEach((v,i)=>{if(v===null)return;path+=(path?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);dots+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4" fill="#fff" stroke="#0b7f6a" stroke-width="2"/>`});
-  const last=have[have.length-1],first=have[0];
-  return `<div class="trend"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ความแม่นรายสัปดาห์ 8 สัปดาห์ล่าสุด: ${have.join('%, ')}%"><path d="${path}" fill="none" stroke="#0b7f6a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${dots}</svg>
-   <p>ความแม่นรายสัปดาห์ (เฉพาะสัปดาห์ที่ทำ ≥10 ข้อ) จาก ${first}% เป็น ${last}%</p></div>`}
+  const t2=have.length>=2?lineHTML(pts,`ความแม่นรายสัปดาห์ (เฉพาะสัปดาห์ที่ทำ ≥10 ข้อ) จาก ${have[0]}% เป็น ${have[have.length-1]}%`,'ความแม่นรายสัปดาห์',v=>v+'%'):`<div class="trend"><p>เส้นความแม่นรายสัปดาห์จะขึ้นเมื่อมีอย่างน้อย 2 สัปดาห์ที่ทำครบ 10 ข้อขึ้นไป</p></div>`;
+  return t1+t2}
 
 function render(){
-  const b=belt(),nb=nextBelt(),bp=beltProgress(),t=today(),ratio=Math.min(1,t.a/GOAL),C=2*Math.PI*56;
+  const t=today(),ratio=Math.min(1,t.a/GOAL),C=2*Math.PI*56;
+  const tn=tempoNow(),tprev=tempoPrev(),dl=tn&&tprev?tn.v-tprev.v:null,ti=tn?tierIdx(tn.v):0,nt=TIERS[ti+1]||null,tp=nt&&tn?Math.max(0,Math.min(1,(tn.v-TIERS[ti].at)/(nt.at-TIERS[ti].at))):0;
   const tot=totals(),w1=winAcc(6,0),w0=winAcc(13,7),sp=sprintRuns();
   const cmp=w1.a>=10&&w0.a>=10?w1.pct-w0.pct:null;
-  const need=nb!==null?BELTS[nb].xp-bp.x:0;
   main.innerHTML=`
   <section class="hero glass" aria-labelledby="hb">
     <div>
-      <p class="eyebrow">สายของคุณ</p>
-      <h1 id="hb">สาย${BELTS[b].th}</h1>
-      <span class="band" style="--bc:${BELTS[b].col};--be:${BELTS[b].edge}" aria-hidden="true"></span>
-      ${nb!==null?`<div class="xp"><p class="xp-t"><span>${bp.x>=bp.to?`XP <b>${bp.x}</b> · ครบแล้ว พร้อมสอบ`:`XP <b>${bp.x}</b> / ${bp.to}`}</span><span>สายถัดไป: ${BELTS[nb].th}</span></p><div class="xp-bar" style="--bc:${BELTS[nb].col};--be:${BELTS[nb].edge};--w:${Math.round(bp.pct*100)}%"><i></i></div></div>`
-        :`<p class="xp-t"><span>ถึงสายดำแล้ว · XP <b>${bp.x}</b></span></p>`}
+      <p class="eyebrow">${tn?`Tempo ตอนนี้ · เฉลี่ย ${tn.n} Sprint ล่าสุด`:'Tempo'}</p>
+      <h1 id="hb">${tn?`<span class="n tempo">${tn.v.toFixed(1)}</span><small class="unit">ข้อ/นาที</small><span class="tier">${TIERS[ti].th}</span>`:'ยังไม่มี Tempo'}</h1>
+      ${tn?`<p class="delta ${dl===null?'':dl>=0?'up':'down'}">${dl===null?`สูงสุดที่เคยทำได้ ${tempoBest().toFixed(1)}`:`${dl>=0?'▲ +':'▼ −'}${Math.abs(dl).toFixed(1)} จาก 5 รอบก่อนหน้า · สูงสุด ${tempoBest().toFixed(1)}`}</p>
+      ${nt?`<div class="xp"><p class="xp-t"><span>ระดับ ${TIERS[ti].th}</span><span>ถัดไป: ${nt.th} ที่ ${nt.at}</span></p><div class="xp-bar" style="--w:${Math.round(tp*100)}%"><i></i></div></div>`:''}`
+      :'<p class="delta">เล่น Sprint 60 วินาทีรอบแรกเพื่อวัด Tempo ของคุณ</p>'}
       <div class="cta">
         <a class="btn pri go" href="play.html#sprint">${I('play')}เริ่ม Sprint 60 วินาที</a>
-        ${nb===null?'':examOpen()?`<a class="btn go" href="play.html#exam">${I('belt')}สอบสาย${BELTS[nb].th}</a>`:`<span class="btn go locked" aria-disabled="true">${I('lock')}สอบสาย${BELTS[nb].th} · อีก ${need} XP</span>`}
         <a class="btn" href="play.html#free">${I('free')}ไม่จับเวลา</a>
       </div>
-      ${nb===null?'':`<p class="cta-note">สอบสาย${BELTS[nb].th}: Sprint 60 วินาที ถูกอย่างน้อย ${EXAM.need[nb]} ข้อและแม่น ≥${Math.round(EXAM.acc*100)}% · XP ได้จากข้อที่ตอบถูก (พื้นฐาน 1 · กลาง 2 · สูง 3)</p>`}
+      <p class="cta-note">Tempo = ข้อที่ตอบถูกต่อนาทีใน Sprint ถ่วงตามระดับโจทย์ (พื้นฐาน 1 · กลาง 1.5 · สูง 2) เฉลี่ย 5 รอบล่าสุด ตอบเยอะแต่ช้า หรือเลือกแต่ข้อง่าย จะไม่ทำให้ Tempo ขึ้น</p>
     </div>
     <div class="today">
       <div class="today-l">
@@ -91,7 +94,7 @@ function render(){
   <section class="panel glass" aria-labelledby="hs">
     <div class="panel-h"><h2 id="hs">สถิติของคุณ</h2></div>
     <dl class="facts">
-      <div><dt>Sprint สูงสุด</dt><dd>${sp.length?bestSprint():'–'} <small>${sp.length?`ข้อ · ${sp.length} รอบ`:''}</small></dd></div>
+      <div><dt>Tempo สูงสุด</dt><dd>${sp.length?tempoBest().toFixed(1):'–'} <small>${sp.length?`Sprint สูงสุด ${bestSprint()} ข้อ · ${sp.length} รอบ`:''}</small></dd></div>
       <div><dt>ถูกติดกันสูงสุด</dt><dd>${D.runs.length?bestRunStreak():'–'} <small>${D.runs.length?'ข้อในรอบเดียว':''}</small></dd></div>
       <div><dt>ตอบทั้งหมด</dt><dd>${tot.a} <small>${tot.a?`ข้อ · ถูก ${Math.round(100*tot.c/tot.a)}%`:''}</small></dd></div>
       <div><dt>แม่น 7 วันล่าสุด</dt><dd>${w1.a?w1.pct+'%':'–'} ${cmp===null?'':`<small class="${cmp>=0?'up':'down'}">${cmp>=0?'+':'−'}${Math.abs(cmp)} จุด จากสัปดาห์ก่อน</small>`}</dd></div>

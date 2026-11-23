@@ -31,25 +31,21 @@ if(AUTO)mode=AUTO;
 
 function renderSetup(){
   document.documentElement.style.setProperty('--lvl-soft','#bcd0ff');
-  const nb=nextBelt(),open=examOpen(),sp=sprintRuns().length;
-  if(mode==='exam'&&!open)mode='sprint';
-  const ex=mode==='exam';
+  const sp=sprintRuns().length,tn=tempoNow();
+  if(mode==='exam')mode='sprint';
   main.innerHTML=`<section class="head" style="padding-left:6px"><h1>เล่น</h1>
   <p class="th">สุ่มโจทย์จากหลายเทคนิค โดยไม่บอกว่าต้องใช้วิธีไหน คุณต้องเลือกเอง</p></section>
   <section class="pane glass" id="mxSet">
     <div class="mix-set">
-      <span class="lab">ระดับ</span><div class="seg" id="lvChips">${LV.map((l,i)=>`<button class="tog" style="--lc:${l.col}" aria-pressed="${(ex?EXAM.lv(nb)[i]:lvOn[i])}" data-i="${i}" ${ex?'disabled':''}><i class="sw"></i>${l.th}</button>`).join('')}</div>
+      <span class="lab">ระดับ</span><div class="seg" id="lvChips">${LV.map((l,i)=>`<button class="tog" style="--lc:${l.col}" aria-pressed="${lvOn[i]}" data-i="${i}"><i class="sw"></i>${l.th}</button>`).join('')}</div>
       <span class="lab">โหมด</span><div class="seg" id="mdChips">
         <button class="tog" aria-pressed="${mode==='sprint'}" data-m="sprint">${I('timer')}Sprint 60 วินาที</button>
-        <button class="tog" aria-pressed="${mode==='free'}" data-m="free">${I('free')}ไม่จับเวลา มีเฉลย</button>
-        ${nb===null?'':`<button class="tog" aria-pressed="${ex}" data-m="exam" ${open?'':'disabled'}>${open?I('belt'):I('lock')}สอบสาย${BELTS[nb].th}</button>`}</div>
+        <button class="tog" aria-pressed="${mode==='free'}" data-m="free">${I('free')}ไม่จับเวลา มีเฉลย</button></div>
       <span class="lab">ปากกา</span><div class="seg"><button class="tog" id="penTog" aria-pressed="${pp.on}">${I('pen')}เขียนคำตอบด้วยปากกา</button>${pp.on?`<label class="pen-idle">ส่งอัตโนมัติหลังหยุดเขียน <select id="penIdle" class="sel">${IDLE_CHOICES.map(c=>`<option value="${c[0]}" ${c[0]===pp.idle?'selected':''}>${c[1]}</option>`).join('')}</select></label>`:''}</div>
-      <span></span><div><button class="btn pri" id="mxStart">${I('play')}${ex?'เริ่มสอบ':'เริ่มเล่น'}</button></div>
+      <span></span><div><button class="btn pri" id="mxStart">${I('play')}เริ่มเล่น</button></div>
     </div>
     <div class="pbline">
-      ${mode==='free'?'<span>โหมดนี้ไม่นับเป็นสถิติ Sprint แต่ยังได้ XP และนับในวันที่เล่น</span>':`<span>สถิติ Sprint สูงสุด <b>${sp?bestSprint():'–'}</b></span>`}
-      ${ex?`<span>ผ่านเมื่อถูก ≥ <b>${EXAM.need[nb]}</b> ข้อ และแม่น ≥ <b>${Math.round(EXAM.acc*100)}%</b></span>`:''}
-      ${!open&&nb!==null?`<span>สอบสาย${BELTS[nb].th}ได้เมื่อมี XP ${BELTS[nb].xp} (ตอนนี้ ${xp()})</span>`:''}
+      ${mode==='free'?'<span>โหมดนี้ไม่นับเป็น Tempo แต่ยังนับในกิจกรรมของวัน</span>':`<span>Tempo ตอนนี้ <b>${tn?tn.v.toFixed(1):'–'}</b></span><span>สถิติ Sprint สูงสุด <b>${sp?bestSprint():'–'}</b> ข้อ</span>`}
     </div>
   </section>
   <div id="mxArea"></div>`;
@@ -62,16 +58,16 @@ function renderSetup(){
 function startMix(){
   if(mx&&mx.timer)clearInterval(mx.timer);
   try{history.replaceState(null,'',location.pathname)}catch(e){}
-  const ex=mode==='exam',nb=nextBelt(),lv=ex?EXAM.lv(nb):lvOn,timed=mode!=='free';
+  const lv=lvOn,timed=mode!=='free';
   const lvTxt=LV.filter((l,i)=>lv[i]).map(l=>l.th).join(', ');
-  mxSet.innerHTML=`<div class="row" style="justify-content:space-between"><span class="meta" style="margin:0"><span>${ex?I('belt')+'สอบสาย'+BELTS[nb].th:timed?I('timer')+'Sprint 60 วินาที':I('free')+'ไม่จับเวลา'}</span><span>ระดับ: ${lvTxt}</span></span><button class="btn ghost" id="mxReset">${I('refresh')}เปลี่ยนการตั้งค่า</button></div>`;
+  mxSet.innerHTML=`<div class="row" style="justify-content:space-between"><span class="meta" style="margin:0"><span>${timed?I('timer')+'Sprint 60 วินาที':I('free')+'ไม่จับเวลา'}</span><span>ระดับ: ${lvTxt}</span></span><button class="btn ghost" id="mxReset">${I('refresh')}เปลี่ยนการตั้งค่า</button></div>`;
   mxReset.onclick=()=>{if(mx&&mx.timer)clearInterval(mx.timer);if(pad){pad.destroy();pad=null}renderSetup()};
   const best0=bestSprint();
   const usePen=pp.on&&!!Recog.load();
   if(pad){pad.destroy();pad=null}
-  mx={mode,ex,tgt:nb,pool:T.filter(t=>lv[t.lv]),score:0,total:0,miss:[],t0:performance.now(),end:performance.now()+60000,timer:null,cur:null,tries:0,done:false,streak:0,bs:0,best0,xp0:xp(),a0:today().a,lv:lv.slice()};
+  mx={mode,wc:0,tn0:tempoNow(),pool:T.filter(t=>lv[t.lv]),score:0,total:0,miss:[],t0:performance.now(),end:performance.now()+60000,timer:null,cur:null,tries:0,done:false,streak:0,bs:0,best0,a0:today().a,lv:lv.slice()};
   mxArea.innerHTML=`<section class="stage glass">${timed?'<div class="timer"><i id="tBar"></i></div>':''}
-   <div class="score"><div>ถูก<b id="mScore">0</b></div><div>ทำไป<b id="mTot">0</b></div>${timed?'<div>เหลือ (วินาที)<b id="mTime">60</b></div>':''}${mode==='sprint'?`<div>สถิติ<b>${best0||'–'}</b></div>`:''}${ex?`<div>ต้องได้<b>${EXAM.need[nb]}</b></div>`:''}</div>
+   <div class="score"><div>ถูก<b id="mScore">0</b></div><div>ทำไป<b id="mTot">0</b></div>${timed?'<div>เหลือ (วินาที)<b id="mTime">60</b></div>':''}${mode==='sprint'?`<div>สถิติ<b>${best0||'–'}</b></div>`:''}</div>
    <div class="q huge" id="mQ"></div>
    ${usePen?'<div id="padHost"></div>':''}<div class="row" style="justify-content:center"><input class="ans" id="mIn" inputmode="decimal" autocomplete="off" aria-label="คำตอบ" placeholder="คำตอบ" ${usePen?'hidden':''}>${mode==='free'?`<button class="btn ghost" id="mSkip">${I('refresh')}ข้อใหม่</button>`:''}</div>
    <div class="tagline" id="mTag" aria-live="polite"></div><div id="mPrism"></div><div class="viz" id="mViz"></div><ol class="steps" id="mSteps"></ol>
@@ -90,7 +86,7 @@ function mixAnswer(raw,viaPen){const{t,p}=mx.cur;const rd=viaPen?` · ระบ�
   if(mx.done){nextMix();return}
   const v=parse(raw);if(isNaN(v))return;
   const ok=same(v,p.ans);
-  if(mode!=='free'){mx.total++;hit(ok);if(ok){mx.score++;record(t.id,true)}else{record(t.id,false);mx.miss.push({t,p,v,pen:!!viaPen})}
+  if(mode!=='free'){mx.total++;hit(ok);if(ok){mx.score++;mx.wc+=TW[t.lv];record(t.id,true)}else{record(t.id,false);mx.miss.push({t,p,v,pen:!!viaPen})}
     mScore.textContent=mx.score;mTot.textContent=mx.total;nextMix();
     mTag.innerHTML=ok?`<span class="okc">ข้อที่แล้วถูก</span> · ${t.en}`:`<span class="badc">ข้อที่แล้วผิด</span> · ${p.q} = ${f(p.ans)}${rd}`;return}
   if(ok){mx.total++;mx.score++;hit(mx.tries===0);if(mx.tries===0)record(t.id,true);mIn.className='ans ok';mQ.innerHTML=qHTML(p.q,p.ans);mTag.innerHTML=`<span class="okc">ถูก</span> · ทางลัดที่ใช้ได้คือ <b>${t.en}</b> (${t.th}) · Enter ข้อต่อไป`;mx.done=true;if(pad)pad.lock(true)}
@@ -105,26 +101,22 @@ function endMix(){
   if(!mx||mx.over)return;mx.over=true;clearInterval(mx.timer);if(pad){pad.destroy();pad=null}
   const m=mx,acc=m.total?Math.round(100*m.score/m.total):0,timed=m.mode!=='free';
   const secs=timed?60:Math.round((performance.now()-m.t0)/1000);
-  const passed=m.ex&&m.score>=EXAM.need[m.tgt]&&m.total>0&&m.score/m.total>=EXAM.acc;
-  const beltBefore=belt();
-  if(m.total>0)addRun({mode:m.mode,score:m.score,total:m.total,secs,bs:m.bs,belt:m.ex?m.tgt:0,passed});
-  const gained=xp()-m.xp0,td=today().a;
+  let run=null;if(m.total>0)run=addRun({mode:m.mode,score:m.score,total:m.total,secs,bs:m.bs,wc:m.wc});
+  const td=today().a,tn1=tempoNow();
   const weak=[...new Map(m.miss.map(x=>[x.t.id,x.t])).values()];
   let verdict='';
-  if(m.ex){verdict=passed?`<p class="verdict win">${beltSwatch(m.tgt)}ผ่าน! เลื่อนเป็นสาย${BELTS[m.tgt].th}</p>`
-    :`<p class="verdict lose">ยังไม่ผ่านสาย${BELTS[m.tgt].th} · ต้องถูก ≥ ${EXAM.need[m.tgt]} ข้อ และแม่น ≥ ${Math.round(EXAM.acc*100)}% (รอบนี้ ${m.score} ข้อ แม่น ${acc}%)</p>`}
-  else if(m.mode==='sprint'&&m.total>0){
+  if(m.mode==='sprint'&&m.total>0){
     verdict=m.best0===0?`<p class="verdict win">รอบแรก ตั้งสถิติไว้ที่ ${m.score} ข้อ</p>`
       :m.score>m.best0?`<p class="verdict win">สถิติใหม่ ${m.score} ข้อ (เดิม ${m.best0} · เพิ่ม ${m.score-m.best0})</p>`
       :m.score===m.best0?`<p class="verdict">เท่าสถิติเดิม ${m.best0} ข้อ</p>`
       :`<p class="verdict lose">ต่ำกว่าสถิติ ${m.best0-m.score} ข้อ (สถิติ ${m.best0})</p>`}
-  const bp=beltProgress();
+  const tempoLine=m.mode==='sprint'&&run?`<span>Tempo รอบนี้ <b>${run.tp.toFixed(1)}</b>${tn1?` · เฉลี่ย ${tn1.n} รอบล่าสุด <b>${tn1.v.toFixed(1)}</b>${m.tn0?` (${tn1.v>=m.tn0.v?'+':'−'}${Math.abs(tn1.v-m.tn0.v).toFixed(1)})`:''}`:''}</span>`:'';
   mxArea.innerHTML=`<section class="stage glass">${verdict}<div class="summary"><div><p class="sub">คะแนน</p><div class="big-n">${m.score}<small> / ${m.total}</small></div><p class="meta" style="margin-top:8px">ความแม่น ${acc}%${timed?` · ทำ ${m.total} ข้อใน 60 วินาที`:` · ทำ ${m.total} ข้อ`} · ถูกติดกันสูงสุด ${m.bs}</p>
-    <div class="gain"><span>XP <b>+${gained}</b>${bp.n===null?'':bp.x>=bp.to?` · พร้อมสอบสาย${BELTS[bp.n].th}แล้ว`:` (ถึงสาย${BELTS[bp.n].th}อีก ${bp.to-bp.x})`}</span><span>วันนี้ <b>${td}</b>/${GOAL} ข้อ</span></div></div>
+    <div class="gain">${tempoLine}<span>วันนี้ <b>${td}</b>/${GOAL} ข้อ</span></div></div>
    <div><p class="sub">ควรทบทวน</p><div class="weak">${weak.length?weak.map(t=>`<div><a class="link" href="learn.html#${t.id}">${t.en}</a> · ${t.th}</div>`).join(''):`<div>รอบนี้ไม่มีข้อผิด ลองเปิดระดับขั้นสูงดู</div>`}</div></div></div>
    ${m.miss.length?`<p class="sub" style="margin-top:22px">ข้อที่ผิด</p>`+m.miss.map(x=>`<div class="miss"><div class="mq">${x.p.q} = ${f(x.p.ans)} <span>${x.pen?'ระบบอ่านลายมือได้':'คุณตอบ'} ${f(x.v)}</span></div>${prismHTML(x.p.split,false)}<ol class="steps">${stepsHTML(x.p.steps)}</ol></div>`).join(''):''}
-   <div class="row" style="margin-top:14px"><button class="btn pri" id="mAgain">${I('refresh')}${m.ex&&!passed?'สอบใหม่':'เล่นอีกรอบ'}</button><a class="btn ghost" href="index.html">กลับหน้าหลัก</a></div></section>`;
-  mAgain.onclick=()=>{if(mode==='exam'&&!examOpen())mode='sprint';if(mode==='exam'&&beltBefore!==belt())mode='sprint';startMix()}}
+   <div class="row" style="margin-top:14px"><button class="btn pri" id="mAgain">${I('refresh')}เล่นอีกรอบ</button><a class="btn ghost" href="index.html">กลับหน้าหลัก</a></div></section>`;
+  mAgain.onclick=startMix}
 
 window.onData=()=>updateChip();
 mountShell('play');renderSetup();initAuth();
